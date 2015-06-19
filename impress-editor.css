@@ -1,0 +1,16 @@
+.h5p-impress-presentation.impress-presentation-preview {
+  height: 1px;
+}
+
+.h5p-impress-wrapper {
+  height: 100%;
+}
+
+.impress-presentation-buttonbar {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.impress-presentation-buttonbar .joubel-simple-rounded-button {
+  margin-right: 1em;
+}
