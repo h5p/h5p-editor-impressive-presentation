@@ -19,7 +19,10 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.defaults = {
       action: {},
       backgroundGroup: {
-        transparentBackground: true
+        transparentBackground: true,
+        backgroundColor: 'fff',
+        backgroundWidth: 640,
+        backgroundHeight: 360
       },
       positioning: {
         centerText: true,
@@ -30,6 +33,10 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
         rotateY: 0,
         rotateZ: 0,
         absoluteRotation: 0
+      },
+      ordering: {
+        includeInPath: true,
+        pathIndex: 1
       }
     };
 
@@ -246,7 +253,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   ImpressPresentationEditor.prototype.createExampleAction = function (viewObject) {
     var self = this;
 
-    // Find Advanced Text option library with correct version from semantics, should be more robust.
+    // Find Advanced Text library with correct version from semantics, should be more robust.
     var libraryOptions = self.field.fields[0].field.fields[0].options;
     var foundLib = false;
     for (var libIndex in libraryOptions) {
