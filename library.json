@@ -15,6 +15,9 @@
   ],
   "preloadedJs": [
     {
+      "path": "free-transform.js"
+    },
+    {
       "path": "impress-editor.js"
     }
   ],

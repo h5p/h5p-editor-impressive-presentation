@@ -6,7 +6,7 @@ var H5PEditor = H5PEditor || {};
  *
  * @param {jQuery} $
  */
-H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEditor = (function ($, JoubelUI) {
+H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEditor = (function ($, JoubelUI, FreeTransform) {
 
   /**
    * Initialize interactive video editor.
@@ -23,9 +23,9 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       },
       positioning: {
         centerText: true,
-        yPosition: 0,
-        xPosition: 0,
-        zPosition: 0,
+        y: 0,
+        x: 0,
+        z: 0,
         absoluteRotation: 0
       }
     };
@@ -110,7 +110,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     }
 
     // Enable free transform of steps
-    self.initMouseListeners();
+    new FreeTransform(self.IP, self);
   }
 
   /**
@@ -155,23 +155,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   };
 
   ImpressPresentationEditor.prototype.goToEditContent = function () {
-    var self = this;
-    console.log(self.$semantics);
-    console.log(self.$semantics.children());
-    console.log(H5P.$body);
-    console.log(document);
-    console.log(self.$semantics.offset().top);
-    console.log(self.$semantics.offset().top);
-    console.log(self.$template.offset().top);
-    console.log(self.$template.scrollTop());
-    console.log($(document));
-    console.log($('html, body', window));
-    console.log($('html, body', window.top));
-    console.log(window);
-    //self.$semantics.scrollTop();
-    $('html, body').animate({
-      scrollTop: self.$semantics.offset().top
-    }, 2000);
   };
 
   /**
@@ -223,7 +206,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // Initialize new step at the position of active step
     var $activeStep = self.IP.$jmpress.jmpress('active');
     var currentId = self.getUniqueId($activeStep);
-    debugger;
     var activeStepParams = self.IP.viewElements[currentId].params;
 
     var newStepParams = $.extend(true, {}, self.defaults, activeStepParams);
@@ -285,125 +267,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
         }
       }
     }
-  };
-
-  /**
-   * Initializes mouse dragging functionality.
-   */
-  ImpressPresentationEditor.prototype.initMouseListeners = function () {
-    var self = this;
-    var isDragging = false;
-    var initialPos = {
-      x: 0,
-      y: 0
-    };
-    var currentPos = {
-      x: 0,
-      y: 0
-    };
-    var $activeStep;
-    var initialData;
-    var scrollStep = 10;
-    var scrollStepMultiple = 1;
-    var maxScrollStepMultiple = 10;
-    var startedScrolling;
-    var progressiveScrollDelay = 400;
-
-    self.IP.$jmpress.on('mousewheel', function (e) {
-      if (self.moveEditing) {
-        var currentTime = new Date().getTime();
-
-        // Make scrolling faster when scrolling multiple times within progressive delay duration
-        if (startedScrolling && (currentTime - startedScrolling) < progressiveScrollDelay) {
-          scrollStepMultiple += 1;
-
-          // Cap at max multiple
-          if (scrollStepMultiple >= maxScrollStepMultiple) {
-            scrollStepMultiple = maxScrollStepMultiple;
-          }
-        }
-        else {
-          scrollStepMultiple = 1;
-        }
-        startedScrolling = currentTime;
-
-        console.log("scrolling!");
-        $activeStep = self.IP.$jmpress.jmpress('active');
-        var activeStepData = $activeStep.data('stepData');
-        var activeId = self.getUniqueId($activeStep);
-        var activeStepParams = self.IP.viewElements[activeId].params;
-        if (e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0) {
-          // scroll up
-          console.log("scrolling up!");
-          activeStepData.z -= (scrollStep * scrollStepMultiple);
-          activeStepParams.positioning.zPosition -= (scrollStep * scrollStepMultiple);
-        }
-        else {
-          // scroll down
-          console.log("scrolling down!");
-          activeStepData.z += (scrollStep * scrollStepMultiple);
-          activeStepParams.positioning.zPosition += (scrollStep * scrollStepMultiple);
-        }
-        self.reselectStep();
-        self.updateSemantics();
-        return false;
-      }
-    });
-
-    self.IP.$jmpress.mousedown(function (e) {
-      if (self.moveEditing) {
-        initialPos.x = e.clientX;
-        initialPos.y = e.clientY;
-        isDragging = true;
-        $activeStep = self.IP.$jmpress.jmpress('active');
-        initialData = $.extend({}, $activeStep.data().stepData);
-      }
-    });
-
-    self.IP.$jmpress.mouseup(function () {
-      if (self.moveEditing) {
-        isDragging = false;
-
-        // Record the latest coordinates into params
-        console.log("active step ?", $activeStep);
-        var currentId = self.getUniqueId($activeStep);
-        var activeStepData = $activeStep.data().stepData;
-        console.log("active step data", activeStepData);
-        var newStepParams = {
-          yPosition: activeStepData.y,
-          xPosition: activeStepData.x,
-          zPosition: activeStepData.z,
-          absoluteRotation: activeStepData.rotate
-        };
-
-        console.log("current id ?", currentId);
-        console.log("params", self.params);
-        console.log("current params", self.params[currentId]);
-        $.extend(true, self.params[currentId].positioning, newStepParams);
-        console.log("new step params", newStepParams);
-        console.log("extended params", self.params[currentId]);
-        self.updateSemantics();
-      }
-    });
-
-    self.IP.$jmpress.mousemove(function (e) {
-      if (isDragging && self.moveEditing) {
-        currentPos.x = e.clientX;
-        currentPos.y = e.clientY;
-
-        // distance mouse moved since start of drag
-        var deltaX = currentPos.x - initialPos.x;
-        var deltaY = currentPos.y - initialPos.y;
-
-        // Update active step
-        $activeStep.data().stepData.x = initialData.x - deltaX;
-        $activeStep.data().stepData.y = initialData.y - deltaY;
-        self.reselectStep();
-
-        // Do not propagate, prevents dragging of images/items
-        return false;
-      }
-    });
   };
 
   ImpressPresentationEditor.prototype.getUniqueId = function ($step) {
@@ -469,4 +332,4 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   return ImpressPresentationEditor;
 
-}(H5P.jQuery, H5P.JoubelUI));
+}(H5P.jQuery, H5P.JoubelUI, H5PEditor.ImpressPresentationEditor.FreeTransform));
