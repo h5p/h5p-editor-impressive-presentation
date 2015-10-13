@@ -26,6 +26,9 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
         y: 0,
         x: 0,
         z: 0,
+        rotateX: 0,
+        rotateY: 0,
+        rotateZ: 0,
         absoluteRotation: 0
       }
     };
@@ -44,6 +47,10 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.field = field;
     self.setValue = setValue;
     self.params = params;
+    self.editModes = {
+      move: false,
+      rotate: false
+    };
 
     /**
      * Editor wrapper
@@ -140,12 +147,12 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     }).appendTo($buttonBar);
 
     JoubelUI.createSimpleRoundedButton('Move slide!').click(function () {
-      self.toggleMoveMode();
+      self.toggleMode(ImpressPresentationEditor.MOVE);
       self.IP.refocusView();
     }).appendTo($buttonBar);
 
     JoubelUI.createSimpleRoundedButton('Rotate slide!').click(function () {
-      self.toggleRotateMode();
+      self.toggleMode(ImpressPresentationEditor.ROTATE);
       self.IP.refocusView();
     }).appendTo($buttonBar);
 
@@ -206,23 +213,15 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // Initialize new step at the position of active step
     var $activeStep = self.IP.$jmpress.jmpress('active');
     var currentId = self.getUniqueId($activeStep);
-    var activeStepParams = self.IP.viewElements[currentId].params;
+    var activeStepParams = self.params[currentId];
 
-    var newStepParams = $.extend(true, {}, self.defaults, activeStepParams);
+    var newStepParams = $.extend(true, {}, this.defaults);
+    $.extend(true, newStepParams.positioning, activeStepParams.positioning);
     var viewObject = self.IP.createViewObject(self.IP.idCounter, newStepParams);
 
     // Create example html from active step
     var $newStep = self.IP.createViewHtml(viewObject);
     viewObject.$element = $newStep;
-
-
-    console.log("what is new Step params ?", newStepParams.positioning);
-    console.log("active step params", activeStepParams.positioning);
-    console.log("did new step params get updated ?", newStepParams.positioning);
-
-
-
-    console.log("create advanced text instance!");
     self.createExampleAction(viewObject);
 
     // Push to view elements array
@@ -279,35 +278,52 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   /**
    * Toggle editor mode.
    */
-  ImpressPresentationEditor.prototype.toggleMoveMode = function () {
+  ImpressPresentationEditor.prototype.toggleMode = function (mode) {
     var self = this;
     console.log("toggle editor mode");
-    console.log(self.moveEditing);
-    if (self.moveEditing) {
-      self.disableMoveMode();
+    console.log(self.editModes[mode]);
+    if (self.editModes[mode]) {
+      self.disableMode(mode);
     } else {
-      self.enableMoveMode();
+      self.enableMode(mode);
     }
   };
 
   /**
-   * Enable editor mode, let's the user pan, zoom and rotate
-   * the current step. Disables click navigation.
+   * Enable free transform mode. Disables click navigation.
    */
-  ImpressPresentationEditor.prototype.enableMoveMode = function () {
+  ImpressPresentationEditor.prototype.enableMode = function (mode) {
     var self = this;
+
+    // Disable all modes before enabling new mode
+    self.disableAllModes();
     var settings = self.IP.$jmpress.jmpress('settings');
-    // Disable click navigation
     settings.mouse.clickSelects = false;
-    self.moveEditing = true;
+    self.editModes[mode] = true;
   };
 
   /**
-   * Disable editor mode.
+   * Disable free transform mode.
    */
-  ImpressPresentationEditor.prototype.disableMoveMode = function () {
+  ImpressPresentationEditor.prototype.disableMode = function (mode) {
     var self = this;
-    self.moveEditing = false;
+    self.editModes[mode] = false;
+    var settings = self.IP.$jmpress.jmpress('settings');
+    settings.mouse.clickSelects = true;
+  };
+
+  /**
+   * Disable all free transform modes
+   */
+  ImpressPresentationEditor.prototype.disableAllModes = function () {
+    var self = this;
+
+    for (var mode in self.editModes) {
+      if (self.editModes.hasOwnProperty(mode)) {
+        self.editModes[mode] = false;
+      }
+    }
+
     var settings = self.IP.$jmpress.jmpress('settings');
     settings.mouse.clickSelects = true;
   };
@@ -329,6 +345,9 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   ImpressPresentationEditor.prototype.validate = function () {
     return true;
   };
+
+  ImpressPresentationEditor.MOVE = 'move';
+  ImpressPresentationEditor.ROTATE = 'rotate';
 
   return ImpressPresentationEditor;
 

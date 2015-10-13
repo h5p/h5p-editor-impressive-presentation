@@ -8,33 +8,95 @@ H5PEditor.ImpressPresentationEditor = H5PEditor.ImpressPresentationEditor || {};
 H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
 
   function FreeTransform(IP, IPEditor) {
+    /**
+     * Keeps track of dragging mouse state.
+     * @type {boolean}
+     */
     var isDragging = false;
-    var initialPos = {};
+
+    /**
+     * Keeps track of initial mouse down position.
+     */
+    var initialPos;
+
+    /**
+     * Keeps track of mouse moved amount.
+     */
     var mouseMoved;
+
+    /**
+     * Keeps track of active step element.
+     */
     var $activeStep;
+
+    /**
+     * Keeps track of active step parameters.
+     */
     var activeStepParams;
+
+    /**
+     * Keeps track of initial scroll amount.
+     * @type {number}
+     */
     var scrollStep = 10;
+
+    /**
+     * Keeps track of scroll step multiple for progressively faster scrolling within a time interval.
+     * @type {number}
+     */
     var scrollStepMultiple = 1;
+
+    /**
+     * Keeps track of maximum scroll multiple to avoid scrolling getting out of hand.
+     * @type {number}
+     */
     var maxScrollStepMultiple = 10;
+
+    /**
+     * Rotate a fraction of the delta mouse movements to slow down rotation.
+     * @type {number}
+     */
+    var rotateFraction = 0.1;
+
+    /**
+     * The time/date object a scroll was started.
+     */
     var startedScrolling;
+
+    /**
+     * Progressive scroll delay in ms, used to measure if multiple scrolls are used in the given interval.
+     * @type {number}
+     */
     var progressiveScrollDelay = 400;
 
     /**
      * Mouse scroll functionality
      */
     IP.$jmpress.on('mousewheel', function (e) {
-      if (IPEditor.moveEditing || IPEditor.rotateEditing) {
-        updateScrollMultiple();
+      if (IPEditor.editModes.move || IPEditor.editModes.rotate) {
+
         $activeStep = IP.$jmpress.jmpress('active');
         activeStepParams = IPEditor.params[IPEditor.getUniqueId($activeStep)];
 
+        updateScrollMultiple();
         // scroll up
         if (e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0) {
-          updateActiveStep('z', (activeStepParams.positioning.z - (scrollStep * scrollStepMultiple)));
+          if (IPEditor.editModes.move) {
+            updateActiveStep('z', (activeStepParams.positioning.z - (scrollStep * scrollStepMultiple)));
+          }
+          else if (IPEditor.editModes.rotate) {
+            updateActiveStep('rotateZ', (activeStepParams.positioning.rotateZ - (scrollStep * scrollStepMultiple * rotateFraction)));
+          }
         }
         else { // scroll down
-          updateActiveStep('z', (activeStepParams.positioning.z + (scrollStep * scrollStepMultiple)));
+          if (IPEditor.editModes.move) {
+            updateActiveStep('z', (activeStepParams.positioning.z + (scrollStep * scrollStepMultiple)));
+          }
+          else if (IPEditor.editModes.rotate) {
+            updateActiveStep('rotateZ', (activeStepParams.positioning.rotateZ + (scrollStep * scrollStepMultiple * rotateFraction)));
+          }
         }
+
         IPEditor.reselectStep();
         IPEditor.updateSemantics();
         return false;
@@ -45,7 +107,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
      * Mouse press and move functionality
      */
     IP.$jmpress.mousedown(function (e) {
-      if (IPEditor.moveEditing || IPEditor.rotateEditing) {
+      if (IPEditor.editModes.move || IPEditor.editModes.rotate) {
         setInitialPos(e);
         resetMouseMoved();
         isDragging = true;
@@ -68,10 +130,17 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
      * Update view and params relative to how much mouse moved.
      */
     var mouseUp = function () {
-      if (isDragging && (IPEditor.moveEditing || IPEditor.rotateEditing)) {
+      if (isDragging && (IPEditor.editModes.move || IPEditor.editModes.rotate)) {
         isDragging = false;
-        updateActiveStep('x', activeStepParams.positioning.x - mouseMoved.deltaX);
-        updateActiveStep('y', activeStepParams.positioning.y - mouseMoved.deltaY);
+        if (IPEditor.editModes.move) {
+          updateActiveStep('x', activeStepParams.positioning.x - mouseMoved.deltaX);
+          updateActiveStep('y', activeStepParams.positioning.y - mouseMoved.deltaY);
+        }
+        else if (IPEditor.editModes.rotate) {
+          updateActiveStep('rotateY', activeStepParams.positioning.rotateY - (mouseMoved.deltaX * rotateFraction));
+          updateActiveStep('rotateX', activeStepParams.positioning.rotateX - (mouseMoved.deltaY * rotateFraction));
+        }
+
         IPEditor.reselectStep();
         IPEditor.updateSemantics();
       }
@@ -84,10 +153,19 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
      * @param e mouseEvent
      */
     var mouseMove = function (e) {
-      if (isDragging && (IPEditor.moveEditing || IPEditor.rotateEditing)) {
+      if (isDragging && (IPEditor.editModes.move || IPEditor.editModes.rotate)) {
         updateMouseMovedAmount(e);
-        updateActiveStepView('x', activeStepParams.positioning.x - mouseMoved.deltaX);
-        updateActiveStepView('y', activeStepParams.positioning.y - mouseMoved.deltaY);
+        console.log("what is editmodes ?", IPEditor.editModes);
+        if (IPEditor.editModes.move) {
+          updateActiveStepView('x', activeStepParams.positioning.x - mouseMoved.deltaX);
+          updateActiveStepView('y', activeStepParams.positioning.y - mouseMoved.deltaY);
+        }
+        else if (IPEditor.editModes.rotate) {
+          console.log("edit modes, update rotateX and Y");
+          updateActiveStepView('rotateY', activeStepParams.positioning.rotateY - (mouseMoved.deltaX * rotateFraction));
+          updateActiveStepView('rotateX', activeStepParams.positioning.rotateX - (mouseMoved.deltaY * rotateFraction));
+        }
+
         IPEditor.reselectStep();
       }
     };
@@ -108,7 +186,9 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
      * @param value
      */
     var updateActiveStepView = function (prop, value) {
+      console.log("active step data ?", $activeStep.data('stepData'));
       $activeStep.data('stepData')[prop] = value;
+      console.log("Setting prop to", prop, $activeStep.data('stepData')[prop]);
     };
 
     /**
@@ -117,7 +197,9 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
      * @param value
      */
     var updateActiveStepParams = function (prop, value) {
+      console.log("updating active step params", prop, value, activeStepParams.positioning, activeStepParams.positioning[prop]);
       activeStepParams.positioning[prop] = value;
+      console.log("new active step params", activeStepParams.positioning, activeStepParams.positioning[prop]);
     };
 
     /**
