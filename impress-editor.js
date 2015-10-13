@@ -16,7 +16,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   function ImpressPresentationEditor(parent, field, params, setValue) {
     var self = this;
 
-    this.defaults = {
+    self.defaults = {
       action: {},
       backgroundGroup: {
         transparentBackground: true
@@ -33,24 +33,24 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // Set default params
     if (params === undefined) {
       params = [
-        this.defaults
+        self.defaults
       ];
       setValue(field, params);
 
-      this.emptyParams = true;
+      self.emptyParams = true;
     }
 
-    this.parent = parent;
-    this.field = field;
-    this.setValue = setValue;
-    this.params = params;
+    self.parent = parent;
+    self.field = field;
+    self.setValue = setValue;
+    self.params = params;
 
     /**
      * Editor wrapper
      *
      * @type {H5P.jQuery}
      */
-    this.$template = $(
+    self.$template = $(
       '<div class="impress-editor-wrapper">' +
         '<div class="impress-presentation-preview"></div>' +
         '<div class="impress-presentation-buttonbar"></div>' +
@@ -63,54 +63,54 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
      *
      * @type {H5P.jQuery}
      */
-    this.$preview = $('.impress-presentation-preview', this.$template);
-    console.log(this.$preview);
+    self.$preview = $('.impress-presentation-preview', self.$template);
+    console.log(self.$preview);
 
     /**
      * Button bar
      *
      * @type {H5P.jQuery}
      */
-    this.$buttonBar = $('.impress-presentation-buttonbar', this.$template);
-    console.log(this.$buttonBar);
+    self.$buttonBar = $('.impress-presentation-buttonbar', self.$template);
+    console.log(self.$buttonBar);
 
     /**
      * Semantics container
      *
      * @type {H5P.jQuery}
      */
-    this.$semantics = $('.impress-editor-semantics', this.$template);
+    self.$semantics = $('.impress-editor-semantics', self.$template);
 
     // Recreate IP on semantics changed
-    this.$semantics.change(function () {
+    self.$semantics.change(function () {
 
       console.log("editor semantics changed!!");
     });
-    console.log(this.$semantics);
+    console.log(self.$semantics);
 
     // Make sure widget can pass readies (used when processing semantics)
-    this.passReadies = true;
-    this.parent.ready(function () {
+    self.passReadies = true;
+    self.parent.ready(function () {
       self.passReadies = false;
     });
 
-    this.resize();
+    self.resize();
 
     // Create preview
-    this.IP = new H5P.ImpressPresentation({viewsGroup: this.params}, H5PEditor.contentId);
-    this.IP.attach(this.$preview);
+    self.IP = new H5P.ImpressPresentation({viewsGroup: self.params}, H5PEditor.contentId);
+    self.IP.attach(self.$preview);
 
-    this.semanticsList = [H5P.cloneObject(field.fields[0], true)];
+    self.semanticsList = [H5P.cloneObject(field.fields[0], true)];
 
     // Create example content if no params
-    if (this.emptyParams) {
+    if (self.emptyParams) {
       self.createExampleAction(self.IP.viewElements[0]);
       self.params[0] = self.IP.viewElements[0].params;
       self.updateSemantics();
     }
 
     // Enable free transform of steps
-    this.initMouseListeners();
+    self.initMouseListeners();
   }
 
   /**
@@ -118,14 +118,15 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
    * @param {$} $wrapper
    */
   ImpressPresentationEditor.prototype.appendTo = function ($wrapper) {
-    this.$inner = $wrapper;
-    this.createSemantics();
-    this.$template.appendTo($wrapper);
+    var self = this;
+    self.$inner = $wrapper;
+    self.createSemantics();
+    self.$template.appendTo($wrapper);
 
     // Create buttons
-    this.createButtons(this.$buttonBar);
+    self.createButtons(self.$buttonBar);
 
-    this.resize();
+    self.resize();
   };
 
   ImpressPresentationEditor.prototype.createButtons = function ($buttonBar) {
@@ -139,7 +140,12 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     }).appendTo($buttonBar);
 
     JoubelUI.createSimpleRoundedButton('Move slide!').click(function () {
-      self.toggleEditorMode();
+      self.toggleMoveMode();
+      self.IP.refocusView();
+    }).appendTo($buttonBar);
+
+    JoubelUI.createSimpleRoundedButton('Rotate slide!').click(function () {
+      self.toggleRotateMode();
       self.IP.refocusView();
     }).appendTo($buttonBar);
 
@@ -150,8 +156,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.goToEditContent = function () {
     var self = this;
-    console.log(this.$semantics);
-    console.log(this.$semantics.children());
+    console.log(self.$semantics);
+    console.log(self.$semantics.children());
     console.log(H5P.$body);
     console.log(document);
     console.log(self.$semantics.offset().top);
@@ -175,34 +181,39 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
    * @returns {undefined}
    */
   ImpressPresentationEditor.prototype.ready = function (ready) {
-    if (this.passReadies) {
-      this.parent.ready(ready);
+    var self = this;
+    if (self.passReadies) {
+      self.parent.ready(ready);
     } else {
-      this.readies.push(ready);
+      self.readies.push(ready);
     }
   };
 
   ImpressPresentationEditor.prototype.updateSemantics = function () {
-    this.$semantics.children().remove();
-    this.createSemantics();
+    var self = this;
+    self.$semantics.children().remove();
+    self.createSemantics();
   };
 
   ImpressPresentationEditor.prototype.createSemantics = function () {
+    var self = this;
+
     // semantics holder
-    H5PEditor.processSemanticsChunk(this.semanticsList, {views: this.params}, this.$semantics, this);
+    H5PEditor.processSemanticsChunk(self.semanticsList, {views: self.params}, self.$semantics, this);
   };
 
   /**
    * Resize area used for Impressive Presentation preview
    */
   ImpressPresentationEditor.prototype.resize = function () {
-    var containerWidth = this.$preview.width();
+    var self = this;
+    var containerWidth = self.$preview.width();
     var containerHeight = (containerWidth * 9) / 16;
 
     // Set container height, width already 100%
-    this.$preview.height(containerHeight);
-    if (this.IP) {
-      H5P.trigger(this.IP, 'resize');
+    self.$preview.height(containerHeight);
+    if (self.IP) {
+      H5P.trigger(self.IP, 'resize');
     }
   };
 
@@ -210,16 +221,16 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     var self = this;
 
     // Initialize new step at the position of active step
-    var $activeStep = this.IP.$jmpress.jmpress('active');
+    var $activeStep = self.IP.$jmpress.jmpress('active');
     var currentId = self.getUniqueId($activeStep);
     debugger;
-    var activeStepParams = this.IP.viewElements[currentId].params;
+    var activeStepParams = self.IP.viewElements[currentId].params;
 
-    var newStepParams = $.extend(true, {}, this.defaults, activeStepParams);
-    var viewObject = self.IP.createViewObject(this.IP.idCounter, newStepParams);
+    var newStepParams = $.extend(true, {}, self.defaults, activeStepParams);
+    var viewObject = self.IP.createViewObject(self.IP.idCounter, newStepParams);
 
     // Create example html from active step
-    var $newStep = this.IP.createViewHtml(viewObject);
+    var $newStep = self.IP.createViewHtml(viewObject);
     viewObject.$element = $newStep;
 
 
@@ -230,32 +241,32 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
 
     console.log("create advanced text instance!");
-    this.createExampleAction(viewObject);
+    self.createExampleAction(viewObject);
 
     // Push to view elements array
-    this.IP.viewElements.push(viewObject);
-    this.IP.idCounter += 1;
-    this.IP.$jmpress.jmpress('canvas').append($newStep);
-    this.IP.$jmpress.jmpress('init', $newStep);
+    self.IP.viewElements.push(viewObject);
+    self.IP.idCounter += 1;
+    self.IP.$jmpress.jmpress('canvas').append($newStep);
+    self.IP.$jmpress.jmpress('init', $newStep);
 
     // Add step to params
     console.log("adding step to params");
     console.log("viewobject", viewObject);
-    console.log("what is params ? ", this.params);
-    this.params.push(newStepParams);
+    console.log("what is params ? ", self.params);
+    self.params.push(newStepParams);
 
     // Redraw semantics
-    this.updateSemantics();
+    self.updateSemantics();
 
     // Set step as current
-    this.IP.$jmpress.jmpress('goTo', '#' + this.IP.ID_PREFIX + viewObject.idCounter);
+    self.IP.$jmpress.jmpress('goTo', '#' + self.IP.ID_PREFIX + viewObject.idCounter);
   };
 
   ImpressPresentationEditor.prototype.createExampleAction = function (viewObject) {
     var self = this;
 
     // Find Advanced Text option library with correct version from semantics, should be more robust.
-    var libraryOptions = this.field.fields[0].field.fields[0].options;
+    var libraryOptions = self.field.fields[0].field.fields[0].options;
     var foundLib = false;
     for (var libIndex in libraryOptions) {
       if (libraryOptions.hasOwnProperty(libIndex) && !foundLib) {
@@ -298,8 +309,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     var startedScrolling;
     var progressiveScrollDelay = 400;
 
-    this.IP.$jmpress.on('mousewheel', function (e) {
-      if (self.editing) {
+    self.IP.$jmpress.on('mousewheel', function (e) {
+      if (self.moveEditing) {
         var currentTime = new Date().getTime();
 
         // Make scrolling faster when scrolling multiple times within progressive delay duration
@@ -339,8 +350,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       }
     });
 
-    this.IP.$jmpress.mousedown(function (e) {
-      if (self.editing) {
+    self.IP.$jmpress.mousedown(function (e) {
+      if (self.moveEditing) {
         initialPos.x = e.clientX;
         initialPos.y = e.clientY;
         isDragging = true;
@@ -349,8 +360,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       }
     });
 
-    this.IP.$jmpress.mouseup(function () {
-      if (self.editing) {
+    self.IP.$jmpress.mouseup(function () {
+      if (self.moveEditing) {
         isDragging = false;
 
         // Record the latest coordinates into params
@@ -375,8 +386,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       }
     });
 
-    this.IP.$jmpress.mousemove(function (e) {
-      if (isDragging && self.editing) {
+    self.IP.$jmpress.mousemove(function (e) {
+      if (isDragging && self.moveEditing) {
         currentPos.x = e.clientX;
         currentPos.y = e.clientY;
 
@@ -405,13 +416,14 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   /**
    * Toggle editor mode.
    */
-  ImpressPresentationEditor.prototype.toggleEditorMode = function () {
+  ImpressPresentationEditor.prototype.toggleMoveMode = function () {
+    var self = this;
     console.log("toggle editor mode");
-    console.log(this.editing);
-    if (this.editing) {
-      this.disableEditorMode();
+    console.log(self.moveEditing);
+    if (self.moveEditing) {
+      self.disableMoveMode();
     } else {
-      this.enableEditorMode();
+      self.enableMoveMode();
     }
   };
 
@@ -419,19 +431,21 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
    * Enable editor mode, let's the user pan, zoom and rotate
    * the current step. Disables click navigation.
    */
-  ImpressPresentationEditor.prototype.enableEditorMode = function () {
-    var settings = this.IP.$jmpress.jmpress('settings');
+  ImpressPresentationEditor.prototype.enableMoveMode = function () {
+    var self = this;
+    var settings = self.IP.$jmpress.jmpress('settings');
     // Disable click navigation
     settings.mouse.clickSelects = false;
-    this.editing = true;
+    self.moveEditing = true;
   };
 
   /**
    * Disable editor mode.
    */
-  ImpressPresentationEditor.prototype.disableEditorMode = function () {
-    this.editing = false;
-    var settings = this.IP.$jmpress.jmpress('settings');
+  ImpressPresentationEditor.prototype.disableMoveMode = function () {
+    var self = this;
+    self.moveEditing = false;
+    var settings = self.IP.$jmpress.jmpress('settings');
     settings.mouse.clickSelects = true;
   };
 
@@ -439,9 +453,10 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
    * Reselct current step, needed for some steps to update.
    */
   ImpressPresentationEditor.prototype.reselectStep = function () {
-    var $activeSlide = this.IP.$jmpress.jmpress('active');
-    this.IP.$jmpress.jmpress('reapply', $activeSlide);
-    this.IP.$jmpress.jmpress('select', $activeSlide, 'resize');
+    var self = this;
+    var $activeSlide = self.IP.$jmpress.jmpress('active');
+    self.IP.$jmpress.jmpress('reapply', $activeSlide);
+    self.IP.$jmpress.jmpress('select', $activeSlide, 'resize');
   };
 
   ImpressPresentationEditor.prototype.remove = function () {
