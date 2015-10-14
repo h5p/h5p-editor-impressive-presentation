@@ -75,7 +75,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
     IP.$jmpress.on('mousewheel', function (e) {
       if (IPEditor.editModes.move || IPEditor.editModes.rotate || IPEditor.editModes.transform) {
 
-        $editingStep = IP.$jmpress.find('#' + IP.ID_PREFIX + IPEditor.editingSlideIndex);
+        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingSlideIndex);
         editingStepParams = IPEditor.params.views[IPEditor.editingSlideIndex];
 
 
@@ -113,7 +113,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         setInitialPos(e);
         resetMouseMoved();
         isDragging = true;
-        $editingStep = IP.$jmpress.find('#' + IP.ID_PREFIX + IPEditor.editingSlideIndex);
+        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingSlideIndex);
         editingStepParams = IPEditor.params.views[IPEditor.editingSlideIndex];
 
         // Register mouse events on body

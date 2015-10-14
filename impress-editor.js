@@ -119,8 +119,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
     // Create example content if no params
     if (self.emptyParams) {
-      self.createExampleAction(self.IP.viewElements[0]);
-      self.params.views[0] = self.IP.viewElements[0].params;
+      self.createExampleAction(self.IP.steps[0]);
+      self.params.views[0] = self.IP.steps[0].params;
       self.updateSemantics();
     }
 
@@ -133,8 +133,9 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.IP = new H5P.ImpressPresentation({viewsGroup: self.params}, H5PEditor.contentId);
     self.createStepSelector();
 
-    self.IP.on('createdViewHtml', function (e) {
-      self.addStepToSelector(e.data.$element, e.data.id);
+    self.IP.on('createdStep', function (e) {
+      var step = e.data;
+      self.addStepToSelector(step.getElement(), step.getId());
     });
 
     self.IP.attach(self.$preview);
@@ -226,7 +227,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     JoubelUI.createButton({
       'class': 'h5p-select-go-to'
     }).click(function () {
-      self.IP.$jmpress.jmpress('goTo', '#' + self.IP.ID_PREFIX + self.editingSlideIndex);
+      self.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + self.editingSlideIndex);
     }).appendTo($selectorContainer);
 
     return $selectorContainer;
@@ -332,7 +333,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.createExampleAction(viewObject);
 
     // Push to view elements array
-    self.IP.viewElements.push(viewObject);
+    self.IP.steps.push(viewObject);
     self.IP.idCounter += 1;
     self.IP.$jmpress.jmpress('canvas').append($newStep);
     self.IP.$jmpress.jmpress('init', $newStep);
@@ -344,7 +345,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.updateSemantics();
 
     // Set step as current
-    self.IP.$jmpress.jmpress('goTo', '#' + self.IP.ID_PREFIX + viewObject.idCounter);
+    self.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + viewObject.idCounter);
   };
 
   ImpressPresentationEditor.prototype.createExampleAction = function (viewObject) {
@@ -373,9 +374,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   };
 
   ImpressPresentationEditor.prototype.getUniqueId = function ($step) {
-    var self = this;
     var stepId = $step.attr('id');
-    var id = stepId.split(self.IP.ID_PREFIX);
+    var id = stepId.split(H5P.ImpressPresentation.ID_PREFIX);
     return id[1];
   };
 
@@ -448,8 +448,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     var self = this;
     var $updateStep;
     if (idx) {
-      var viewObject = self.getViewObjectFromIndex(idx);
-      $updateStep = viewObject.$element;
+      var step = self.getStep(idx);
+      $updateStep = step.getElement();
     }
     else {
       $updateStep = self.IP.$jmpress.jmpress('active');
@@ -459,9 +459,9 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.IP.$jmpress.jmpress('reapply', $updateStep);
   };
 
-  ImpressPresentationEditor.prototype.getViewObjectFromIndex = function (idx) {
+  ImpressPresentationEditor.prototype.getStep = function (idx) {
     var self = this;
-    return self.IP.viewElements[idx];
+    return self.IP.steps[idx];
   };
 
   ImpressPresentationEditor.prototype.remove = function () {
