@@ -14,3 +14,19 @@
 .impress-presentation-buttonbar .joubel-simple-rounded-button {
   margin-right: 1em;
 }
+
+.h5p-impresspresentation-editor .h5p-select-container .h5p-select-go-to {
+  vertical-align: baseline;
+  margin-bottom: 0;
+  margin-left: 0;
+  border-radius: 0;
+  padding: 0 0.8em;
+  line-height: 1.4em;
+}
+
+.h5p-impresspresentation-editor .h5p-select-container .h5p-select-go-to:before {
+  font-family: H5PFontAwesome4, sans-serif;
+  content: '\f061';
+  padding-right: 0;
+  font-size: 0.8em;
+}
