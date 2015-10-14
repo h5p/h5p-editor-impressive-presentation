@@ -115,7 +115,11 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // Create preview
     self.createPreview();
 
+    console.log("semantics list ?");
     self.semanticsList = [H5P.cloneObject(field.fields[1], true)];
+    //self.semanticsList = [$.extend(true, {}, field.fields[1])];
+
+    console.log(self.semanticsList);
 
     // Create example content if no params
     if (self.emptyParams) {
@@ -246,13 +250,10 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.registerEnterStepListener = function ($step, idx) {
     var self = this;
-    console.log("register enter step listener", $step, idx);
     $step.on('enterStep', function () {
-      console.log("entered step ??", $step, idx);
       var modeSelected = false;
       for (var editMode in self.editModes) {
         if (self.editModes.hasOwnProperty(editMode) && !modeSelected) {
-          console.log("edit mode ?", self.editModes[editMode]);
           if (self.editModes[editMode]) {
             modeSelected = true;
           }
@@ -266,7 +267,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.setSelectorStep = function (idx) {
     var self = this;
-    console.log("set selector step !!");
     self.$stepSelector.val(idx);
     self.editingSlideIndex = idx;
   };
@@ -296,7 +296,14 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     var self = this;
 
     // semantics holder
+    /*self.IP.steps.forEach(function (step) {
+
+    })*/;
     H5PEditor.processSemanticsChunk(self.semanticsList, {views: self.params.views}, self.$semantics, this);
+  };
+
+  ImpressPresentationEditor.prototype.createStepSemantics = function () {
+
   };
 
   /**
