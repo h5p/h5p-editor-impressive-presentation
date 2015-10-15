@@ -71,13 +71,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.editingSlideIndex = 0;
 
     /**
-     * Route
-     *
-     * @type {Array}
-     */
-    self.route = [];
-
-    /**
      * Keeps track of semantic fields for parameters
      *
      * @type {void|*}
@@ -190,43 +183,81 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.createButtons = function ($buttonBar) {
     var self = this;
+    self.createTopButtonRow($buttonBar);
+    self.createBottomButtonRow($buttonBar);
+  };
+
+  ImpressPresentationEditor.prototype.createTopButtonRow = function ($buttonBar) {
+    var self = this;
+
+    var $topButtonRow = $('<div>', {
+      'class': 'h5p-buttonbar-top-row'
+    }).appendTo($buttonBar);
 
     // Create selector for selecting which step we are on.
     self.createStepSelectorWidget()
-      .appendTo($buttonBar);
+      .appendTo($topButtonRow);
+
+    // Create route check box
+    self.createRouteCheckbox()
+      .appendTo($topButtonRow);
+  };
+
+  ImpressPresentationEditor.prototype.createBottomButtonRow = function ($buttonBar) {
+    var self = this;
+
+    var $bottomButtonRow = $('<div>', {
+      'class': 'h5p-buttonbar-bottom-row'
+    }).appendTo($buttonBar);
 
     // Add step dynamically
     JoubelUI.createSimpleRoundedButton(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'add')).click(function () {
       self.addStep();
       self.IP.refocusView();
       return false;
-    }).appendTo($buttonBar);
+    }).appendTo($bottomButtonRow);
 
     // Remove step dynamically
     JoubelUI.createSimpleRoundedButton(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'remove')).click(function () {
       self.removeStep();
       self.IP.refocusView();
       return false;
-    }).appendTo($buttonBar);
+    }).appendTo($bottomButtonRow);
 
     JoubelUI.createSimpleRoundedButton(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'move')).click(function () {
       self.toggleMode(ImpressPresentationEditor.MOVE);
       self.IP.refocusView();
-    }).appendTo($buttonBar);
+    }).appendTo($bottomButtonRow);
 
     JoubelUI.createSimpleRoundedButton(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'rotate')).click(function () {
       self.toggleMode(ImpressPresentationEditor.ROTATE);
       self.IP.refocusView();
-    }).appendTo($buttonBar);
+    }).appendTo($bottomButtonRow);
 
     JoubelUI.createSimpleRoundedButton(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'transform')).click(function () {
       self.toggleMode(ImpressPresentationEditor.TRANSFORM);
       self.IP.refocusView();
-    }).appendTo($buttonBar);
+    }).appendTo($bottomButtonRow);
 
     JoubelUI.createSimpleRoundedButton(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'edit')).click(function () {
       self.editStepContent();
-    }).appendTo($buttonBar);
+    }).appendTo($bottomButtonRow);
+
+    JoubelUI.createSimpleRoundedButton(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'background')).click(function () {
+      self.editStepBackground();
+    }).appendTo($bottomButtonRow);
+  };
+
+  ImpressPresentationEditor.prototype.editStepBackground = function (step) {
+    var self = this;
+    step = step ? step : self.IP.getStep(self.editingSlideIndex);
+
+    // Hide jmpress
+    self.IP.$jmpress.addClass('hide');
+
+    // Show library form
+    step.getBackgroundForm().appendTo(self.$stepDialog);
+    self.$stepDialog.addClass('show');
   };
 
   /**
@@ -261,13 +292,78 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.IP.$jmpress.removeClass('hide');
   };
 
+  /**
+   * Done editing step background, remove form.
+   * @param {H5P.ImpressPresentation.Step} [step]
+   */
+  ImpressPresentationEditor.prototype.doneStepBackground = function (step) {
+    var self = this;
+    step = step ? step : self.IP.getStep(self.editingSlideIndex);
+
+    // Hide library form
+    step.getBackgroundForm().detach();
+    self.$stepDialog.removeClass('show');
+
+    // Show jmpress
+    self.IP.$jmpress.removeClass('hide');
+  };
+
   ImpressPresentationEditor.prototype.createStepSelector = function () {
     var self = this;
     self.$stepSelector = $('<select>', {
       'class': 'h5p-step-selector'
     }).change(function () {
-      self.editingSlideIndex = $(this).val();
+      self.updateButtonBar(parseInt($(this).val()));
+      self.IP.refocusView();
     })
+  };
+
+  ImpressPresentationEditor.prototype.createRouteCheckbox = function () {
+    var self = this;
+    var $routeCheckbox = $('<div>', {
+      'class': 'h5p-check-box'
+    });
+
+    var $includeInPathLabel = $('<label>', {
+      'text': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'include')
+    }).appendTo($routeCheckbox);
+
+    self.$includeInPathCheckbox = $('<input>', {
+      'type': 'checkbox',
+      'checked': 'checked'
+    }).click(function () {
+      console.log("is it checked now ?", $(this).is(':checked'));
+      var step = self.IP.getStep(self.editingSlideIndex);
+      var checked = $(this).is(':checked');
+      step.setRouteState(checked);
+
+      if (checked) {
+        self.IP.addToRoute(step.getId());
+      }
+      else {
+        self.IP.removeFromRoute(step.getId());
+      }
+      self.IP.updateRoute();
+      self.IP.refocusView();
+    }).prependTo($includeInPathLabel);
+
+    return $routeCheckbox;
+  };
+
+  /**
+   * Update route checkbox with step params
+   * @param {H5P.ImpressPresentation.Step} step
+   */
+  ImpressPresentationEditor.prototype.updateRouteCheckbox = function (step) {
+    var self = this;
+    self.$includeInPathCheckbox.prop('checked', step.getRouteState());
+  };
+
+  ImpressPresentationEditor.prototype.updateButtonBar = function (stepId) {
+    var self = this;
+    self.$stepSelector.val(stepId);
+    self.updateRouteCheckbox(self.IP.getStep(stepId));
+    self.editingSlideIndex = stepId;
   };
 
   ImpressPresentationEditor.prototype.createStepSelectorWidget = function () {
@@ -289,6 +385,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       'class': 'h5p-select-go-to'
     }).click(function () {
       self.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + self.editingSlideIndex);
+      self.IP.refocusView();
     }).appendTo($selectorContainer);
 
     return $selectorContainer;
@@ -310,11 +407,12 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.removeStepFromSelector = function (step) {
     var self = this;
+    var stepId = step.getId();
     self.$stepSelector.children().each(function () {
-      if ($(this).val() === step.getId()) {
+      if ($(this).val() === stepId) {
         $(this).remove();
       }
-    })
+    });
   };
 
   /**
@@ -334,8 +432,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.setSelectorStep = function (idx) {
     var self = this;
-    self.$stepSelector.val(idx);
-    self.editingSlideIndex = idx;
+    self.updateButtonBar(idx);
   };
 
   /**
@@ -370,7 +467,45 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // semantics holder
     self.IP.steps.forEach(function (step) {
       self.createLibrarySemantics(step);
+      self.createBackgroundSemantics(step);
     });
+  };
+
+  /**
+   * Create background semantics
+   * @param {H5P.ImpressPresentation.Step} step
+   */
+  ImpressPresentationEditor.prototype.createBackgroundSemantics = function (step) {
+    var self = this;
+    var $libraryInstance = $('<div>', {
+      'class': 'h5p-semantics-instance'
+    });
+
+    H5PEditor.processSemanticsChunk(self.semanticsList.fields[2].fields, step.getParams().backgroundGroup, $libraryInstance, self);
+
+    step.setBackgroundForm($libraryInstance);
+
+    // Store children on step
+    step.children = self.children;
+    self.children = undefined;
+
+    // Create done button
+    JoubelUI.createButton({
+      'class': 'h5p-library-done',
+      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'done')
+    }).click(function () {
+      var valid = true;
+      step.children.forEach(function (child) {
+        if (!child.validate()) {
+          valid = false;
+        }
+      });
+
+      if (valid) {
+        step.setBackground(self.IP.contentId);
+        self.doneStepBackground(step);
+      }
+    }).appendTo($libraryInstance);
   };
 
   /**
@@ -469,12 +604,15 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     $.extend(true, newStepParams.positioning, activeStepParams.positioning);
 
     // Create step, example content and activate it
-    var newStep = self.IP.createStep(newStepParams, true)
+    var newStep = self.IP.createStep(newStepParams, true, activeStepId)
       .createExampleContent(self.field.fields[1].field.fields[0].options)
       .activateStep(self.IP.$jmpress);
 
+    self.IP.updateRoute();
+
     // Redraw semantics
     self.createLibrarySemantics(newStep);
+    self.createBackgroundSemantics(newStep);
     var newStepId = newStep.getId();
 
     // Set step as current
@@ -610,7 +748,9 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     rotate: 'Rotate step',
     transform: 'Transform step',
     edit: 'Edit step content',
+    background: 'Edit step background',
     done: 'Done',
-    removeStep: 'Are you sure you wish to remove this step?'
+    removeStep: 'Are you sure you wish to remove this step?',
+    include: 'Included in path'
   }
 };
