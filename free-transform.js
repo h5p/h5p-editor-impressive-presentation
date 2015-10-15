@@ -76,7 +76,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
       if (IPEditor.editModes.move || IPEditor.editModes.rotate || IPEditor.editModes.transform) {
 
         $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingSlideIndex);
-        editingStepParams = IPEditor.params.views[IPEditor.editingSlideIndex];
+        editingStepParams = IP.getStep(IPEditor.editingSlideIndex).getParams();
 
 
         updateScrollMultiple();
@@ -114,7 +114,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         resetMouseMoved();
         isDragging = true;
         $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingSlideIndex);
-        editingStepParams = IPEditor.params.views[IPEditor.editingSlideIndex];
+        editingStepParams = IP.getStep(IPEditor.editingSlideIndex).getParams();
 
         // Register mouse events on body
         H5P.$window.mousemove(function (e) {
@@ -166,7 +166,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
     var mouseMove = function (e) {
       if (isDragging && (IPEditor.editModes.move || IPEditor.editModes.rotate || IPEditor.editModes.transform)) {
         updateMouseMovedAmount(e);
-        console.log("what is editmodes ?", IPEditor.editModes);
+
         if (IPEditor.editModes.move) {
           updateEditingStepView('x', editingStepParams.positioning.x - mouseMoved.deltaX);
           updateEditingStepView('y', editingStepParams.positioning.y - mouseMoved.deltaY);
