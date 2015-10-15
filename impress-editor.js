@@ -64,6 +64,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     };
     self.editingSlideIndex = 0;
 
+    self.semanticsList = $.extend(true, [], self.field.fields[1].field);
+
     /**
      * Editor wrapper
      *
@@ -98,12 +100,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
      */
     self.$semantics = $('.impress-editor-semantics', self.$template);
 
-    // Recreate IP on semantics changed
-    self.$semantics.change(function () {
-
-      console.log("editor semantics changed!!");
-    });
-
     // Make sure widget can pass readies (used when processing semantics)
     self.passReadies = true;
     self.parent.ready(function () {
@@ -114,12 +110,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
     // Create preview
     self.createPreview();
-
-    console.log("semantics list ?");
-    self.semanticsList = [H5P.cloneObject(field.fields[1], true)];
-    //self.semanticsList = [$.extend(true, {}, field.fields[1])];
-
-    console.log(self.semanticsList);
 
     // Create example content if no params
     if (self.emptyParams) {
@@ -135,11 +125,20 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   ImpressPresentationEditor.prototype.createPreview = function () {
     var self = this;
     self.IP = new H5P.ImpressPresentation({viewsGroup: self.params}, H5PEditor.contentId);
+
+    // Reference IP params to only update params one place
+    self.params.views = self.IP.params.viewsGroup.views;
     self.createStepSelector();
 
     self.IP.on('createdStep', function (e) {
       var step = e.data;
       self.addStepToSelector(step.getElement(), step.getId());
+      step.disableContentInteraction();
+
+      // Listen for library (re)creation in Step
+      step.on('createdLibraryElement', function () {
+        step.disableContentInteraction();
+      });
     });
 
     self.IP.attach(self.$preview);
@@ -286,24 +285,95 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     }
   };
 
+  /**
+   * Update semantics.
+   */
   ImpressPresentationEditor.prototype.updateSemantics = function () {
     var self = this;
     self.$semantics.children().remove();
     self.createSemantics();
   };
 
+  /**
+   * Create semantics.
+   */
   ImpressPresentationEditor.prototype.createSemantics = function () {
     var self = this;
 
     // semantics holder
-    /*self.IP.steps.forEach(function (step) {
-
-    })*/;
-    H5PEditor.processSemanticsChunk(self.semanticsList, {views: self.params.views}, self.$semantics, this);
+    self.IP.steps.forEach(function (step) {
+      self.createLibrarySemantics(step);
+    });
   };
 
-  ImpressPresentationEditor.prototype.createStepSemantics = function () {
+  /**
+   * Create library semantics
+   * @param {H5P.ImpressPresentation.Step} step
+   */
+  ImpressPresentationEditor.prototype.createLibrarySemantics = function (step) {
+    var self = this;
 
+    // Semantics container
+    var $librarySemantics = $('<div>', {
+      'class': 'h5p-library-semantics'
+    }).appendTo(self.$semantics);
+
+    var $libraryInstance = self.createSemanticsFields('action', step, self.semanticsList.fields)
+      .appendTo($librarySemantics);
+
+    step.children = self.children;
+    self.children = undefined;
+
+
+    JoubelUI.createButton({
+      'class': 'h5p-library-done',
+      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'done')
+    }).click(function () {
+      var valid = true;
+      step.children.forEach(function (child) {
+        if (!child.validate()) {
+          valid = false;
+        }
+      });
+
+      if (valid) {
+        step.updateLibrary();
+      }
+    }).appendTo($libraryInstance);
+  };
+
+  var findPropertyField = function (property, semanticsList) {
+    var actionField = [];
+
+    semanticsList.forEach(function (semanticField) {
+      if (semanticField.name === property) {
+        actionField.push(semanticField);
+      }
+    });
+
+    return actionField;
+  };
+
+  /**
+   * Create semantic fields for step.
+   * @param {String} property semantics property
+   * @param {Object} step parameters for step containing property
+   * @param {Object} semanticsList semantic field list containing property
+   */
+  ImpressPresentationEditor.prototype.createSemanticsFields = function (property, step, semanticsList) {
+    var self = this;
+    var actionField = findPropertyField(property, semanticsList);
+
+    var $semanticsInstance = $('<div>', {
+      'class': 'h5p-semantics-instance'
+    });
+
+    // Only process semantics field if found
+    if (actionField.length) {
+      H5PEditor.processSemanticsChunk(actionField, step.getParams(), $semanticsInstance, self);
+    }
+
+    return $semanticsInstance;
   };
 
   /**
@@ -495,6 +565,7 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     move: 'Move step!',
     rotate: 'Rotate slide!',
     transform: 'Transform step!',
-    edit: 'Edit content!'
+    edit: 'Edit content!',
+    done: 'Done'
   }
 };
