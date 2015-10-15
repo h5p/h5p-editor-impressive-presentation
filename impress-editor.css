@@ -100,6 +100,10 @@
   margin-bottom: 0;
 }
 
+.h5p-impresspresentation-editor .h5p-buttonbar-top-row .h5p-left-aligned-main-menu {
+  display: inline-block;
+}
+
 .h5p-impresspresentation-editor .h5p-buttonbar-top-row .h5p-right-aligned-submenu {
   float: right;
   display: inline-block;
@@ -162,4 +166,22 @@
 
 .h5p-impresspresentation-editor .h5p-semantics-footer .h5p-semantics-done {
   float: right;
+}
+
+.h5p-impresspresentation-editor .h5p-mode-title,
+.h5p-impresspresentation-editor .h5p-mode-active,
+.h5p-impresspresentation-editor .h5p-mode-container {
+  display: inline-block;
+}
+
+.h5p-impresspresentation-editor .h5p-mode-container.hide {
+  display: none;
+}
+
+.h5p-impresspresentation-editor .h5p-mode-title {
+  margin-right: 0.5em;
+}
+
+.h5p-impresspresentation-editor .h5p-mode-active {
+  font-weight: bold;
 }
