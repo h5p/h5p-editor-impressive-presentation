@@ -75,9 +75,8 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
     IP.$jmpress.on('mousewheel', function (e) {
       if (IPEditor.editModes.move || IPEditor.editModes.rotate || IPEditor.editModes.transform) {
 
-        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingSlideIndex);
-        editingStepParams = IP.getStep(IPEditor.editingSlideIndex).getParams();
-
+        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingStepId);
+        editingStepParams = IP.getStep(IPEditor.editingStepId).getParams();
 
         updateScrollMultiple();
         // scroll up
@@ -98,7 +97,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
           }
         }
 
-        IPEditor.updateStep(IPEditor.editingSlideIndex);
+        IPEditor.updateStep(IPEditor.editingStepId);
         IPEditor.reselectStep();
         IPEditor.updateSemantics();
         return false;
@@ -113,8 +112,8 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         setInitialPos(e);
         resetMouseMoved();
         isDragging = true;
-        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingSlideIndex);
-        editingStepParams = IP.getStep(IPEditor.editingSlideIndex).getParams();
+        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingStepId);
+        editingStepParams = IP.getStep(IPEditor.editingStepId).getParams();
 
         // Register mouse events on body
         H5P.$window.mousemove(function (e) {
@@ -151,7 +150,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
           editingStepParams.backgroundGroup.backgroundHeight = newHeight;
         }
 
-        IPEditor.updateStep(IPEditor.editingSlideIndex);
+        IPEditor.updateStep(IPEditor.editingStepId);
         IPEditor.reselectStep();
         IPEditor.updateSemantics();
       }
@@ -182,7 +181,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
           $editingStep.width(newWidth);
         }
 
-        IPEditor.updateStep(IPEditor.editingSlideIndex);
+        IPEditor.updateStep(IPEditor.editingStepId);
         IPEditor.reselectStep();
       }
     };

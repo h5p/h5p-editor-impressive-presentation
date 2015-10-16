@@ -68,7 +68,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
      *
      * @type {number}
      */
-    self.editingSlideIndex = 0;
+    self.editingStepId = 0;
 
     /**
      * Keeps track of semantic fields for parameters
@@ -125,7 +125,9 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // Create example content if no params
     if (self.emptyParams) {
       var firstStep = self.IP.getStep(0);
-      firstStep.createExampleContent(self.field.fields[0].field.fields[0].options);
+      firstStep.createExampleContent(self.field.fields[0].field.fields[0].options)
+        .setName(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'step') + ' ' + firstStep.getId());
+      self.updateActiveStepDisplay(firstStep.getName());
       self.params.views[0] = self.IP.getStep(0).getParams();
     }
 
@@ -144,8 +146,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
     self.IP.on('createdStep', function (e) {
       var step = e.data;
-      step.disableContentInteraction()
-        .setName(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'step') + ' ' + step.getId());
+      step.disableContentInteraction();
       self.addStepToSelector(step);
 
       // Listen for library (re)creation in Step
@@ -378,7 +379,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.editStepBackground = function (step) {
     var self = this;
-    step = step ? step : self.IP.getStep(self.editingSlideIndex);
+    step = step ? step : self.IP.getStep(self.editingStepId);
 
     // Hide jmpress
     self.IP.$jmpress.addClass('hide');
@@ -394,7 +395,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
    */
   ImpressPresentationEditor.prototype.editStepContent = function (step) {
     var self = this;
-    step = step ? step : self.IP.getStep(self.editingSlideIndex);
+    step = step ? step : self.IP.getStep(self.editingStepId);
 
     // Hide jmpress
     self.IP.$jmpress.addClass('hide');
@@ -410,7 +411,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
    */
   ImpressPresentationEditor.prototype.doneStepContent = function (step) {
     var self = this;
-    step = step ? step : self.IP.getStep(self.editingSlideIndex);
+    step = step ? step : self.IP.getStep(self.editingStepId);
 
     // Hide library form
     step.getLibraryForm().detach();
@@ -428,7 +429,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
    */
   ImpressPresentationEditor.prototype.doneStepBackground = function (step) {
     var self = this;
-    step = step ? step : self.IP.getStep(self.editingSlideIndex);
+    step = step ? step : self.IP.getStep(self.editingStepId);
 
     // Hide library form
     step.getBackgroundForm().detach();
@@ -445,7 +446,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.$stepSelector = $('<select>', {
       'class': 'h5p-step-selector'
     }).change(function () {
-      self.updateButtonBar(parseInt($(this).val()));
+      var stepId = parseInt($(this).val());
+      self.updateButtonBar(stepId);
       self.IP.refocusView();
     })
   };
@@ -464,7 +466,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       'type': 'checkbox',
       'checked': 'checked'
     }).click(function () {
-      var step = self.IP.getStep(self.editingSlideIndex);
+      var step = self.IP.getStep(self.editingStepId);
       var checked = $(this).is(':checked');
       step.setRouteState(checked);
 
@@ -493,16 +495,28 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
   ImpressPresentationEditor.prototype.updateButtonBar = function (stepId) {
     var self = this;
     self.$stepSelector.val(stepId);
+    self.editingStepId = stepId;
     self.updateRouteCheckbox(self.IP.getStep(stepId));
-    self.editingSlideIndex = stepId;
   };
 
   ImpressPresentationEditor.prototype.createActiveStepDisplay = function () {
     var self = this;
-    self.$activeStepDisplay = $('<div>', {
+    self.$activeStepDisplay = $('<input>', {
       'class': 'h5p-active-step-display',
-      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'step') + ' 0'
-    });
+      'maxlength': 15
+    }).change(function () {
+      self.updateActiveStepDisplay($(this).val());
+    }).val(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'step') + ' 0');
+  };
+
+  ImpressPresentationEditor.prototype.updateActiveStepDisplay = function (newName) {
+    var self = this;
+    var $activeStep = self.IP.$jmpress.jmpress('active');
+    var activeStepId = self.getUniqueId($activeStep);
+    var activeStep = self.IP.getStep(activeStepId);
+    activeStep.setName(newName);
+    self.updateStepInSelector(activeStep);
+    self.setActiveStepDisplay(activeStep);
   };
 
   ImpressPresentationEditor.prototype.createActiveStepDisplayWidget = function () {
@@ -527,7 +541,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.setActiveStepDisplay = function (step) {
     var self = this;
-    self.$activeStepDisplay.html(step.getName());
+    var stepName = step.getName();
+    self.$activeStepDisplay.val(stepName);
   };
 
   ImpressPresentationEditor.prototype.createModeDisplay = function () {
@@ -575,11 +590,24 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       'class': 'h5p-select-go-to',
       'title': goToTitle
     }).click(function () {
-      self.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + self.editingSlideIndex);
+      self.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + self.editingStepId);
       self.IP.refocusView();
     }).appendTo($selectorContainer);
 
     return $selectorContainer;
+  };
+
+  /**
+   * Update step name in selector.
+   * @param {H5P.ImpressPresentation.Step} step
+   */
+  ImpressPresentationEditor.prototype.updateStepInSelector = function (step) {
+    var self = this;
+    var stepId = step.getId();
+    self.$stepSelector.find('option[value=' + stepId + ']')
+      .each(function () {
+        $(this).text(step.getName());
+      });
   };
 
   /**
@@ -619,11 +647,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     $step.on('enterStep', function () {
       self.setActiveStepDisplay(step);
     });
-  };
-
-  ImpressPresentationEditor.prototype.setSelectorStep = function (idx) {
-    var self = this;
-    self.updateButtonBar(idx);
   };
 
   /**
@@ -807,6 +830,8 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       .createExampleContent(self.field.fields[0].field.fields[0].options)
       .activateStep(self.IP.$jmpress);
 
+    newStep.setName(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'step') + ' ' + newStep.getId());
+
     self.IP.updateRoute();
 
     // Redraw semantics
@@ -816,13 +841,14 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
     // Set step as current
     self.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + newStepId);
-    self.setSelectorStep(newStepId);
+    self.updateActiveStepDisplay(newStep.getName());
+    self.updateButtonBar(newStepId);
   };
 
   ImpressPresentationEditor.prototype.removeStep = function () {
     var self = this;
     if (confirm(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStep'))) {
-      var editingStep = self.IP.getStep(self.editingSlideIndex);
+      var editingStep = self.IP.getStep(self.editingStepId);
       self.IP.$jmpress.jmpress('prev');
       editingStep.removeStep(self.IP.$jmpress);
       self.IP.removeStep(editingStep.getId());
@@ -900,20 +926,20 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     var self = this;
     var $activeSlide = self.IP.$jmpress.jmpress('active');
     var activeSlideId = self.getUniqueId($activeSlide);
-    if (self.editingSlideIndex === activeSlideId) {
+    if (self.editingStepId === activeSlideId) {
       self.IP.$jmpress.jmpress('select', $activeSlide, 'resize');
     }
   };
 
   /**
    * Update step by reapplying styles
-   * @param {Number} [idx]
+   * @param {Number} [id]
    */
-  ImpressPresentationEditor.prototype.updateStep = function (idx) {
+  ImpressPresentationEditor.prototype.updateStep = function (id) {
     var self = this;
     var $updateStep;
-    if (idx) {
-      var step = self.getStep(idx);
+    if (id !== undefined) {
+      var step = self.getStep(id);
       $updateStep = step.getElement();
     }
     else {
