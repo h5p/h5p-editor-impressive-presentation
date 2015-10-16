@@ -139,7 +139,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
           updateEditingStep('y', editingStepParams.positioning.y - mouseMoved.deltaY);
         }
         else if (IPEditor.editModes.rotate) {
-          updateEditingStep('rotateY', editingStepParams.positioning.rotateY + (mouseMoved.deltaX * rotateFraction));
+          updateEditingStep('rotateY', editingStepParams.positioning.rotateY - (mouseMoved.deltaX * rotateFraction));
           updateEditingStep('rotateX', editingStepParams.positioning.rotateX - (mouseMoved.deltaY * rotateFraction));
         }
         else if (IPEditor.editModes.transform) {
@@ -172,7 +172,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
           updateEditingStepView('y', editingStepParams.positioning.y - mouseMoved.deltaY);
         }
         else if (IPEditor.editModes.rotate) {
-          updateEditingStepView('rotateY', editingStepParams.positioning.rotateY + (mouseMoved.deltaX * rotateFraction));
+          updateEditingStepView('rotateY', editingStepParams.positioning.rotateY - (mouseMoved.deltaX * rotateFraction));
           updateEditingStepView('rotateX', editingStepParams.positioning.rotateX - (mouseMoved.deltaY * rotateFraction));
         }
         else if (IPEditor.editModes.transform) {
