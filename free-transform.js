@@ -25,6 +25,11 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
     var mouseMoved;
 
     /**
+     * Keeps track of active step.
+     */
+    var editingStep;
+
+    /**
      * Keeps track of active step element.
      */
     var $editingStep;
@@ -74,9 +79,9 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
      */
     IP.$jmpress.on('mousewheel', function (e) {
       if (IPEditor.editModes.move || IPEditor.editModes.rotate || IPEditor.editModes.transform) {
-
-        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingStepId);
-        editingStepParams = IP.getStep(IPEditor.editingStepId).getParams();
+        editingStep = IP.getStep(IPEditor.editingStepId);
+        $editingStep = editingStep.getElement();
+        editingStepParams = editingStep.getParams();
 
         updateScrollMultiple();
         // scroll up
@@ -112,8 +117,9 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         setInitialPos(e);
         resetMouseMoved();
         isDragging = true;
-        $editingStep = IP.$jmpress.find('#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingStepId);
-        editingStepParams = IP.getStep(IPEditor.editingStepId).getParams();
+        editingStep = IP.getStep(IPEditor.editingStepId);
+        $editingStep = editingStep.getElement();
+        editingStepParams = editingStep.getParams();
 
         // Register mouse events on body
         H5P.$window.mousemove(function (e) {
@@ -140,14 +146,22 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         else if (IPEditor.editModes.rotate) {
           updateEditingStep('rotateY', editingStepParams.positioning.rotateY - (mouseMoved.deltaX * rotateFraction));
           updateEditingStep('rotateX', editingStepParams.positioning.rotateX - (mouseMoved.deltaY * rotateFraction));
+
         }
         else if (IPEditor.editModes.transform) {
           var newWidth = editingStepParams.backgroundGroup.backgroundWidth + (mouseMoved.deltaX);
           var newHeight = editingStepParams.backgroundGroup.backgroundHeight - (mouseMoved.deltaY);
-          $editingStep.height(newHeight);
-          $editingStep.width(newWidth);
-          editingStepParams.backgroundGroup.backgroundWidth = newWidth;
-          editingStepParams.backgroundGroup.backgroundHeight = newHeight;
+
+          // Cap at 10px
+          if (newWidth < 10) {
+            newWidth = 10;
+          }
+
+          if (newHeight < 10) {
+            newHeight = 10;
+          }
+
+          editingStep.setBackgroundSize(newWidth, newHeight);
         }
 
         IPEditor.updateStep(IPEditor.editingStepId);
@@ -177,8 +191,20 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         else if (IPEditor.editModes.transform) {
           var newWidth = editingStepParams.backgroundGroup.backgroundWidth + (mouseMoved.deltaX);
           var newHeight = editingStepParams.backgroundGroup.backgroundHeight - (mouseMoved.deltaY);
-          $editingStep.height(newHeight);
-          $editingStep.width(newWidth);
+
+          // Cap at 10px
+          if (newWidth < 10) {
+            newWidth = 10;
+          }
+
+          if (newHeight < 10) {
+            newHeight = 10;
+          }
+
+          $editingStep.css({
+            width: newWidth + 'px',
+            height: newHeight + 'px'
+          });
         }
 
         IPEditor.updateStep(IPEditor.editingStepId);

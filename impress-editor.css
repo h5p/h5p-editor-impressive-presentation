@@ -25,6 +25,14 @@
   font-size: 0.8em;
 }
 
+.h5p-impresspresentation-editor .h5p-select-container .h5p-step-selector {
+  width: 10em;
+}
+
+.h5p-impresspresentation-editor .h5p-active-step-wrapper input.h5p-active-step-display {
+  width: 8.5em;
+}
+
 .h5p-impresspresentation-editor .h5p-select-container .h5p-select-go-to {
   vertical-align: baseline;
   margin-bottom: 0;
@@ -203,4 +211,30 @@
 
 .h5p-impresspresentation-editor .h5p-mode-container {
   display: inline-block;
+}
+
+/* Sortable style */
+.h5p-impresspresentation-editor .h5p-route-list-dialog li.h5p-route-list-element {
+  background-color: white;
+  padding: 10px 40px;
+  display: list-item;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  cursor: pointer;
+}
+
+.h5p-impresspresentation-editor .h5p-route-list-dialog li.h5p-route-list-element:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+.h5p-impresspresentation-editor .h5p-route-list-dialog li.sortable-ghost {
+  opacity: .5;
+  background: #C8EBFB;
+}
+
+
+.h5p-impresspresentation-editor .h5p-route-list-dialog ul.h5p-route-list {
+  margin: 1em 2em;
+  padding: 0;
+  list-style: none;
 }
