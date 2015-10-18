@@ -15,7 +15,7 @@
   ],
   "preloadedJs": [
     {
-      "path": "sortable.js"
+      "path": "sortable-lib.js"
     },
     {
       "path": "free-transform.js"
