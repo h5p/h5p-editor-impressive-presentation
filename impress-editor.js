@@ -35,8 +35,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
         absoluteRotation: 0
       },
       ordering: {
-        includeInPath: true,
-        uniqueId: 0
+        includeInPath: true
       }
     };
 
