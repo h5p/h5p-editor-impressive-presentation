@@ -136,7 +136,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.createPreview = function () {
     var self = this;
-    self.IP = new H5P.ImpressPresentation({viewsGroup: self.params}, H5PEditor.contentId);
+    self.IP = new H5P.ImpressPresentation({viewsGroup: self.params}, H5PEditor.contentId, {disableNavLine: true});
 
     // Reference IP params to only update params one place
     self.params.views = self.IP.params.viewsGroup.views;
