@@ -956,6 +956,13 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
   ImpressPresentationEditor.prototype.removeStep = function () {
     var self = this;
+
+    // Too few steps
+    if (self.IP.getStepCount() <= 1) {
+      self.IP.createErrorMessage(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStepError'));
+      return;
+    }
+
     if (confirm(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStep'))) {
       var editingStep = self.IP.getStep(self.editingStepId);
       self.IP.$jmpress.jmpress('prev');
@@ -1097,6 +1104,7 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     goTo: 'Go to step',
     done: 'Done',
     removeStep: 'Are you sure you wish to remove this step?',
+    removeStepError: 'You can not have zero steps, create a new step and try deleting again.',
     include: 'Included in path',
     mode: 'Mode:',
     move: 'Move',
