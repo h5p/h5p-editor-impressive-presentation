@@ -2,11 +2,17 @@
   height: 1px;
 }
 
+.h5p-impress-presentation.impress-presentation-preview .jmpress:focus {
+  outline-offset: 1px;
+}
+
+
 .h5p-impress-wrapper {
   height: 100%;
 }
 
 .impress-presentation-buttonbar {
+  margin-top: 0.5em;
   border: 1px solid #ccc;
 }
 
