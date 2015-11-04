@@ -296,15 +296,21 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       self.editStepOrdering();
     });
 
-    var $routeList = $('<ul>', {
-      'class': 'h5p-route-list'
-    });
-
-    self.sortable = Sortable.create($routeList.get(0));
-
     self.$routeListDialog = $('<div>', {
       'class': 'h5p-route-list-dialog'
-    }).append($routeList);
+    });
+
+    // Help text
+    $('<div>', {
+      'class': 'h5p-route-list-help-text',
+      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'routeListText')
+    }).appendTo(self.$routeListDialog);
+
+    var $routeList = $('<ul>', {
+      'class': 'h5p-route-list'
+    }).appendTo(self.$routeListDialog);
+
+    self.sortable = Sortable.create($routeList.get(0));
 
     var $semanticsFooter = $('<div>', {
       'class': 'h5p-semantics-footer'
@@ -338,6 +344,10 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
         $('<li>', {
           'class': 'h5p-route-list-element',
           'html': step.getName()
+        }).hover(function () {
+          $(this).addClass('hover');
+        }, function () {
+          $(this).removeClass('hover');
         }).appendTo(self.$routeList);
       }
     }
@@ -401,7 +411,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // Create route check box
     self.createRouteCheckbox()
       .appendTo($orderingButtonBar);
-
 
     // Create sortable route list.
     self.createRouteListWidget(self.IP.route)
@@ -809,7 +818,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     step.setBackgroundForm($libraryInstance);
 
     // Store children on step
-    step.children = self.children;
+    step.children = step.children.concat(self.children);
     self.children = undefined;
 
     var $semanticsFooter = $('<div>', {
@@ -846,7 +855,10 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     step.setLibraryForm($libraryInstance);
 
     // Store children on step
-    step.children = self.children;
+    if (!step.children.length) {
+      step.children = [];
+    }
+    step.children = step.children.concat(self.children);
     self.children = undefined;
 
     var $semanticsFooter = $('<div>', {
@@ -866,6 +878,9 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
       });
 
       if (valid) {
+        if (H5PEditor.Html) {
+          H5PEditor.Html.removeWysiwyg();
+        }
         step.updateLibrary();
         self.doneStepContent(step);
       }
@@ -1112,6 +1127,7 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     transform: 'Transform',
     editingStep: 'Editing step:',
     activeStep: 'Active step:',
-    orderSteps: 'Order steps'
+    orderSteps: 'Order steps',
+    routeListText: 'Reorder a step by dragging it to a new place'
   }
 };

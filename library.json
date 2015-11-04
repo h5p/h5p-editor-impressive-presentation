@@ -51,14 +51,9 @@
       "minorVersion": 4
     },
     {
-      "machineName": "H5P.Blanks",
+      "machineName": "H5P.DragText",
       "majorVersion": 1,
       "minorVersion": 4
-    },
-    {
-      "machineName": "H5P.Video",
-      "majorVersion": 1,
-      "minorVersion": 1
     }
   ]
 }

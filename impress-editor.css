@@ -223,6 +223,10 @@
   cursor: pointer;
 }
 
+.h5p-impresspresentation-editor .h5p-route-list-dialog li.h5p-route-list-element.hover {
+  background: #afd1e1;
+}
+
 .h5p-impresspresentation-editor .h5p-route-list-dialog li.h5p-route-list-element:last-child {
   border-bottom: 1px solid #ccc;
 }
