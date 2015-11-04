@@ -1016,7 +1016,12 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
 
     if (confirm(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStep', {}))) {
       var editingStep = self.IP.getStep(self.editingStepId);
-      self.IP.$jmpress.jmpress('prev');
+      var activeStepID = self.getUniqueId(self.IP.$jmpress.jmpress('active'));
+
+      // Move to previous step if on the deleted step
+      if (activeStepID === self.editingStepId) {
+        self.IP.$jmpress.jmpress('prev');
+      }
       editingStep.removeStep(self.IP.$jmpress);
       self.IP.removeStep(editingStep.getId());
       self.removeStepFromSelector(editingStep);
