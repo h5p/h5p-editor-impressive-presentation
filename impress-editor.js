@@ -109,6 +109,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
      * @type {jQuery}
      */
     self.$stepDialog = $('.impress-presentation-step-dialog', self.$wrapper);
+    self.createStepDialog(self.$stepDialog);
 
     // Make sure widget can pass readies (used when processing semantics)
     self.passReadies = true;
@@ -134,6 +135,31 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.freeTransform = new FreeTransform(self.IP, self);
   }
 
+  /**
+   * Create step dialog and append it to wrapper
+   * @param {jQuery} $wrapper
+   */
+  ImpressPresentationEditor.prototype.createStepDialog = function ($wrapper) {
+    var self = this;
+
+    self.$stepDialogContent = $('<div>', {
+      'class': 'h5p-step-dialog-content'
+    }).appendTo($wrapper);
+
+    var $stepDialogFooter = $('<div>', {
+      'class': 'h5p-step-dialog-footer'
+    }).appendTo($wrapper);
+
+    // Create done button
+    self.$stepDialogButton = JoubelUI.createButton({
+      'class': 'h5p-step-dialog-done',
+      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'done', {})
+    }).appendTo($stepDialogFooter);
+  };
+
+  /**
+   * Create preview of Impressive Presentation
+   */
   ImpressPresentationEditor.prototype.createPreview = function () {
     var self = this;
     self.IP = new H5P.ImpressPresentation({viewsGroup: self.params}, H5PEditor.contentId, {disableNavLine: true});
@@ -311,19 +337,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     }).appendTo(self.$routeListDialog);
 
     self.sortable = Sortable.create($routeList.get(0));
-
-    var $semanticsFooter = $('<div>', {
-      'class': 'h5p-semantics-footer'
-    }).appendTo(self.$routeListDialog);
-
-    // Create done button
-    JoubelUI.createButton({
-      'class': 'h5p-semantics-done',
-      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'done', {})
-    }).click(function () {
-      self.doneStepOrdering();
-    }).appendTo($semanticsFooter);
-
     self.$routeList = $routeList;
 
     return $sortRouteListButton;
@@ -373,8 +386,13 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.IP.$jmpress.addClass('hide');
 
     // Show library form
-    self.$routeListDialog.appendTo(self.$stepDialog);
+    self.$routeListDialog.appendTo(self.$stepDialogContent);
     self.$stepDialog.addClass('show');
+
+    // Create done button
+    self.$stepDialogButton.unbind('click').click(function () {
+      self.doneStepOrdering();
+    });
   };
 
   /**
@@ -514,8 +532,24 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.IP.$jmpress.addClass('hide');
 
     // Show library form
-    step.getBackgroundForm().appendTo(self.$stepDialog);
+    step.getBackgroundForm().appendTo(self.$stepDialogContent);
     self.$stepDialog.addClass('show');
+
+    // Change done button
+    self.$stepDialogButton.unbind('click')
+      .click(function () {
+        var valid = true;
+        step.children.forEach(function (child) {
+          if (!child.validate()) {
+            valid = false;
+          }
+        });
+
+        if (valid) {
+          step.setBackground(self.IP.contentId);
+          self.doneStepBackground(step);
+        }
+      });
   };
 
   /**
@@ -530,8 +564,27 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     self.IP.$jmpress.addClass('hide');
 
     // Show library form
-    step.getLibraryForm().appendTo(self.$stepDialog);
+    step.getLibraryForm().appendTo(self.$stepDialogContent);
     self.$stepDialog.addClass('show');
+
+    // Change done button
+    self.$stepDialogButton.unbind('click')
+      .click(function () {
+        var valid = true;
+        step.children.forEach(function (child) {
+          if (!child.validate()) {
+            valid = false;
+          }
+        });
+
+        if (valid) {
+          if (H5PEditor.Html) {
+            H5PEditor.Html.removeWysiwyg();
+          }
+          step.updateLibrary();
+          self.doneStepContent(step);
+        }
+      });
   };
 
   /**
@@ -856,28 +909,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     // Store children on step
     step.children = step.children.concat(self.children);
     self.children = undefined;
-
-    var $semanticsFooter = $('<div>', {
-      'class': 'h5p-semantics-footer'
-    }).appendTo($libraryInstance);
-
-    // Create done button
-    JoubelUI.createButton({
-      'class': 'h5p-semantics-done',
-      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'done', {})
-    }).click(function () {
-      var valid = true;
-      step.children.forEach(function (child) {
-        if (!child.validate()) {
-          valid = false;
-        }
-      });
-
-      if (valid) {
-        step.setBackground(self.IP.contentId);
-        self.doneStepBackground(step);
-      }
-    }).appendTo($semanticsFooter);
   };
 
   /**
@@ -896,31 +927,6 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     }
     step.children = step.children.concat(self.children);
     self.children = undefined;
-
-    var $semanticsFooter = $('<div>', {
-      'class': 'h5p-semantics-footer'
-    }).appendTo($libraryInstance);
-
-    // Create done button
-    JoubelUI.createButton({
-      'class': 'h5p-semantics-done',
-      'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'done', {})
-    }).click(function () {
-      var valid = true;
-      step.children.forEach(function (child) {
-        if (!child.validate()) {
-          valid = false;
-        }
-      });
-
-      if (valid) {
-        if (H5PEditor.Html) {
-          H5PEditor.Html.removeWysiwyg();
-        }
-        step.updateLibrary();
-        self.doneStepContent(step);
-      }
-    }).appendTo($semanticsFooter);
   };
 
   var findPropertyField = function (property, semanticsList) {
