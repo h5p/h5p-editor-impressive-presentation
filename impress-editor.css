@@ -205,6 +205,7 @@
   padding: 1em;
   box-sizing: border-box;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .h5p-impresspresentation-editor .h5p-mode-container {
