@@ -183,6 +183,7 @@ H5PEditor.widgets.impressPresentationEditor = H5PEditor.ImpressPresentationEdito
     });
 
     self.IP.attach(self.$preview);
+    self.editingStepId = self.getUniqueId(self.IP.$jmpress.jmpress('active'));
   };
 
   ImpressPresentationEditor.prototype.setPerspectiveRatio = function () {
