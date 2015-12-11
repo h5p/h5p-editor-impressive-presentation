@@ -3,7 +3,7 @@
   "description": "Live editor for editing impressive presentations.",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 1,
+  "patchVersion": 2,
   "runnable": 0,
   "author": "Joubel AS",
   "license": "MIT",
@@ -48,7 +48,7 @@
     {
       "machineName": "H5P.MarkTheWords",
       "majorVersion": 1,
-      "minorVersion": 4
+      "minorVersion": 5
     },
     {
       "machineName": "H5P.DragText",
