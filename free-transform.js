@@ -127,9 +127,6 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         }).mouseup(function () {
           mouseUp();
         });
-
-        // Do not propagate, prevents dragging of images/items
-        return false;
       }
     });
 
