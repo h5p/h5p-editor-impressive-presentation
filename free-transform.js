@@ -128,8 +128,12 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
           mouseUp();
         });
 
-        // Do not propagate, prevents dragging of images/items
-        return false;
+        H5P.$body
+          .css({'-moz-user-select': 'none', '-webkit-user-select': 'none'/*, 'user-select': 'none', '-ms-user-select': 'none'*/})
+          .attr('unselectable', 'on')[0]
+          .onselectstart = H5P.$body[0].ondragstart = function () {
+          return false;
+        };
       }
     });
 
@@ -170,6 +174,11 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
       }
 
       H5P.$window.off('mousemove').off('mouseup');
+
+      H5P.$body
+        .css({'-moz-user-select': '', '-webkit-user-select': ''/*, 'user-select': '', '-ms-user-select': ''*/})
+        .removeAttr('unselectable')[0]
+        .onselectstart = H5P.$body[0].ondragstart = null;
     };
 
     /**
