@@ -190,6 +190,7 @@
   padding: 1em;
   bottom: 0;
   border-top: 1px solid #ccc;
+  z-index: 1;
 }
 
 .h5p-impresspresentation-editor .h5p-step-dialog-footer .h5p-step-dialog-done {

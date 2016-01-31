@@ -15,13 +15,25 @@
   ],
   "preloadedJs": [
     {
-      "path": "sortable-lib.js"
+      "path": "scripts/libs/sortable-lib.js"
     },
     {
-      "path": "free-transform.js"
+      "path": "scripts/step-dialog.js"
     },
     {
-      "path": "impress-editor.js"
+      "path": "scripts/menus/core-menu.js"
+    },
+    {
+      "path": "scripts/menus/ordering-menu.js"
+    },
+    {
+      "path": "scripts/menus/transform-menu.js"
+    },
+    {
+      "path": "scripts/free-transform.js"
+    },
+    {
+      "path": "scripts/impress-editor.js"
     }
   ],
   "preloadedDependencies": [

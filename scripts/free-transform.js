@@ -1,5 +1,3 @@
-/*global H5P*/
-var H5PEditor = H5PEditor || {};
 H5PEditor.ImpressPresentationEditor = H5PEditor.ImpressPresentationEditor || {};
 
 /**
