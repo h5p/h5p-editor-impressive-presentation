@@ -6,12 +6,12 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
 
     /**
      * Core button bar element
-     *
-     * @type {jQuery}
      */
     var $coreButtonBar = $('<div>', {
       'class': 'h5p-buttonbar-sub-menu show'
     });
+
+    var coreTitle = H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'coreMenu', {});
 
     /**
      * Create button for adding step at current position
@@ -83,8 +83,8 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       IP.updateRoute()
         .goToStepId(newStepId);
 
-      IPEditor.updateActiveStepDisplay(newStep.getName())
-        .updateButtonBar(newStepId);
+      IPEditor.updateActiveStepDisplay(newStep.getName());
+      IPEditor.editingStep.updateButtonBar(newStepId);
     };
 
     /**
@@ -113,6 +113,19 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       }
     };
 
+    this.createButton = function (clickCallback) {
+      return JoubelUI.createButton({
+        'class': 'h5p-main-menu-button h5p-core-menu-button active',
+        'title': coreTitle
+      }).click(function () {
+        if (clickCallback) {
+          clickCallback();
+        }
+        $coreButtonBar.addClass('show');
+        IPEditor.IP.refocusView();
+      });
+    };
+
     /**
      * Append core menu to element
      *
@@ -120,6 +133,14 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
      */
     this.appendTo = function ($wrapper) {
       $coreButtonBar.appendTo($wrapper);
+    };
+
+    /**
+     * Hide button bar
+     */
+    this.hide = function () {
+      console.log("hide core btuton bar");
+      $coreButtonBar.removeClass('show');
     };
 
     /**

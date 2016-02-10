@@ -7,12 +7,12 @@ H5PEditor.ImpressPresentationEditor.OrderingMenu = function ($, JoubelUI) {
 
     /**
      * Ordering button bar menu
-     *
-     * @type {jQuery} Ordering button bar
      */
     var $orderingButtonBar = $('<div>', {
       'class': 'h5p-buttonbar-sub-menu'
     });
+
+    var orderingTitle = H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'orderingMenu', {});
 
     /**
      * Route checkbox wrapper
@@ -171,6 +171,19 @@ H5PEditor.ImpressPresentationEditor.OrderingMenu = function ($, JoubelUI) {
     // Create sortable from route list
     Sortable.create($routeList.get(0));
 
+    this.createButton = function (clickCallback) {
+      return JoubelUI.createButton({
+        'class': 'h5p-main-menu-button h5p-ordering-menu-button',
+        'title': orderingTitle
+      }).click(function () {
+        if (clickCallback) {
+          clickCallback();
+        }
+        $orderingButtonBar.addClass('show');
+        IPEditor.IP.refocusView();
+      });
+    };
+
     /**
      * Append ordering button bar to element
      *
@@ -178,6 +191,10 @@ H5PEditor.ImpressPresentationEditor.OrderingMenu = function ($, JoubelUI) {
      */
     this.appendTo = function ($wrapper) {
       $orderingButtonBar.appendTo($wrapper);
+    };
+
+    this.hide = function () {
+      $orderingButtonBar.removeClass('show');
     };
 
     /**

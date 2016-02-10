@@ -4,14 +4,11 @@ H5PEditor.ImpressPresentationEditor.TransformMenu = function ($, JoubelUI) {
 
   function TransformMenu(IPEditor, IP) {
 
-    /**
-     * Transform button bar
-     *
-     * @type {jQuery}
-     */
     var $transformButtonBar = $('<div>', {
       'class': 'h5p-buttonbar-sub-menu'
     });
+
+    var transformTitle = H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'transformMenu', {});
 
     /**
      * Toggle between button states
@@ -65,11 +62,38 @@ H5PEditor.ImpressPresentationEditor.TransformMenu = function ($, JoubelUI) {
     }).appendTo($transformButtonBar);
 
     /**
+     * Create button bar
+     *
+     * @param clickCallback
+     * @returns {*}
+     */
+    this.createButton = function (clickCallback) {
+      return JoubelUI.createButton({
+        'class': 'h5p-main-menu-button h5p-transform-menu-button',
+        'title': transformTitle
+      }).click(function () {
+        if (clickCallback) {
+          clickCallback();
+        }
+        $transformButtonBar.addClass('show');
+        IPEditor.IP.refocusView();
+      })
+    };
+
+    /**
      * Append to wrapper
+     *
      * @param {jQuery} $wrapper
      */
     this.appendTo = function ($wrapper) {
       $transformButtonBar.appendTo($wrapper);
+    };
+
+    /**
+     * Hide button bar
+     */
+    this.hide = function () {
+      $transformButtonBar.removeClass('show');
     };
 
     /**

@@ -21,13 +21,31 @@
       "path": "scripts/step-dialog.js"
     },
     {
-      "path": "scripts/menus/core-menu.js"
+      "path": "scripts/menus/navigation-menu.js"
     },
     {
-      "path": "scripts/menus/ordering-menu.js"
+      "path": "scripts/menus/sub-menu-selector.js"
     },
     {
-      "path": "scripts/menus/transform-menu.js"
+      "path": "scripts/menus/sub-menus/core-menu.js"
+    },
+    {
+      "path": "scripts/menus/sub-menus/ordering-menu.js"
+    },
+    {
+      "path": "scripts/menus/sub-menus/transform-menu.js"
+    },
+    {
+      "path": "scripts/menus/navigation-menu/active-step.js"
+    },
+    {
+      "path": "scripts/menus/navigation-menu/mode-display.js"
+    },
+    {
+      "path": "scripts/menus/navigation-menu/editing-step.js"
+    },
+    {
+      "path": "scripts/menus/main-menu.js"
     },
     {
       "path": "scripts/free-transform.js"
