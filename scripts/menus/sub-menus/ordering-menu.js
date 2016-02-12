@@ -12,6 +12,11 @@ H5PEditor.ImpressPresentationEditor.OrderingMenu = function ($, JoubelUI) {
       'class': 'h5p-buttonbar-sub-menu'
     });
 
+    /**
+     * Button for opening the button bar
+     */
+    var $button;
+
     var orderingTitle = H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'orderingMenu', {});
 
     /**
@@ -172,16 +177,19 @@ H5PEditor.ImpressPresentationEditor.OrderingMenu = function ($, JoubelUI) {
     Sortable.create($routeList.get(0));
 
     this.createButton = function (clickCallback) {
-      return JoubelUI.createButton({
+      $button = JoubelUI.createButton({
         'class': 'h5p-main-menu-button h5p-ordering-menu-button',
         'title': orderingTitle
       }).click(function () {
         if (clickCallback) {
           clickCallback();
         }
+        $button.addClass('active');
         $orderingButtonBar.addClass('show');
         IPEditor.IP.refocusView();
       });
+
+      return $button;
     };
 
     /**
@@ -194,6 +202,7 @@ H5PEditor.ImpressPresentationEditor.OrderingMenu = function ($, JoubelUI) {
     };
 
     this.hide = function () {
+      $button.removeClass('active');
       $orderingButtonBar.removeClass('show');
     };
 

@@ -115,11 +115,11 @@ H5PEditor.ImpressPresentationEditor =
     });
 
 
-    self.editingStep = new EditingStep();
+    self.editingStep = new EditingStep(self);
 
-    self.activeStep = new ActiveStep();
+    self.activeStep = new ActiveStep(self);
 
-    self.modeDisplay = new ModeDisplay();
+    self.modeDisplay = new ModeDisplay(self);
 
     self.resize();
 
@@ -199,7 +199,6 @@ H5PEditor.ImpressPresentationEditor =
    */
   ImpressPresentationEditor.prototype.appendTo = function ($wrapper) {
     var self = this;
-    self.$inner = $wrapper;
     self.createSemantics();
     self.$wrapper.appendTo($wrapper);
     self.setPerspectiveRatio();

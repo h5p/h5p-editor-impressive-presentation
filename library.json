@@ -36,13 +36,13 @@
       "path": "scripts/menus/sub-menus/transform-menu.js"
     },
     {
-      "path": "scripts/menus/navigation-menu/active-step.js"
+      "path": "scripts/menus/step-navigation/active-step.js"
     },
     {
-      "path": "scripts/menus/navigation-menu/mode-display.js"
+      "path": "scripts/menus/step-navigation/mode-display.js"
     },
     {
-      "path": "scripts/menus/navigation-menu/editing-step.js"
+      "path": "scripts/menus/step-navigation/editing-step.js"
     },
     {
       "path": "scripts/menus/main-menu.js"

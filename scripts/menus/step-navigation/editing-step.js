@@ -5,12 +5,6 @@ H5PEditor.ImpressPresentationEditor.EditingStep = (function ($, JoubelUI) {
   function EditingStep(IPEditor) {
     var self = this;
 
-    this.updateButtonBar = function (stepId) {
-      $stepSelector.val(stepId);
-      IPEditor.editingStepId = stepId;
-      IPEditor.orderingMenu.updateRouteCheckbox(self.IP.getStep(stepId));
-    };
-
     // Container
     var $selectorContainer = $('<div>', {
       'class': 'h5p-select-container'
@@ -46,6 +40,11 @@ H5PEditor.ImpressPresentationEditor.EditingStep = (function ($, JoubelUI) {
       IPEditor.IP.refocusView();
     }).appendTo($selectorContainer);
 
+    this.updateButtonBar = function (stepId) {
+      $stepSelector.val(stepId);
+      IPEditor.editingStepId = stepId;
+      IPEditor.orderingMenu.updateRouteCheckbox(IPEditor.IP.getStep(stepId));
+    };
 
     this.appendTo = function ($wrapper) {
       $selectorContainer.appendTo($wrapper);

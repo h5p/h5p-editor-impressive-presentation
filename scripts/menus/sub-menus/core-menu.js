@@ -11,6 +11,11 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       'class': 'h5p-buttonbar-sub-menu show'
     });
 
+    /**
+     * Button for opening the button bar
+     */
+    var $button;
+
     var coreTitle = H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'coreMenu', {});
 
     /**
@@ -114,16 +119,19 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
     };
 
     this.createButton = function (clickCallback) {
-      return JoubelUI.createButton({
+      $button = JoubelUI.createButton({
         'class': 'h5p-main-menu-button h5p-core-menu-button active',
         'title': coreTitle
       }).click(function () {
         if (clickCallback) {
           clickCallback();
         }
+        $button.addClass('active');
         $coreButtonBar.addClass('show');
         IPEditor.IP.refocusView();
       });
+
+      return $button;
     };
 
     /**
@@ -139,7 +147,7 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
      * Hide button bar
      */
     this.hide = function () {
-      console.log("hide core btuton bar");
+      $button.removeClass('active');
       $coreButtonBar.removeClass('show');
     };
 
