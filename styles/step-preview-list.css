@@ -1,0 +1,61 @@
+.h5p-impress-step-preview-list {
+  position:absolute;
+  left:0;
+  top:0;
+  width:20%;
+  height:100%;
+  z-index: 11;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+.h5p-impress-step-preview-list.hidden {
+  -webkit-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  transform: translateX(-100%);
+  opacity: 0;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.h5p-impress-step-preview-list-title {
+  border-bottom:1px solid #ccc;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.h5p-impress-step-preview-list-title:after {
+  font-family: "H5PFontAwesome4";
+  content: "\f100";
+  left: 0.5em;
+  position: absolute;
+  font-size: 1.2em;
+}
+
+.h5p-impress-step-preview-clones {
+  position: absolute;
+  height: calc(100% - 2em);
+  width: 100%;
+  overflow-y: auto;
+}
+
+.h5p-impress-step-preview-clone-wrapper {
+  width:100%;
+  height: 20%;
+  position: relative;
+  font-size: 6px;
+  border-bottom:1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.h5p-impress-step-preview-clone-wrapper:last-child {
+  border-bottom:none;
+}
+
+.h5p-impress-step-preview-step-clone {
+  position: relative;
+  margin:auto;
+}

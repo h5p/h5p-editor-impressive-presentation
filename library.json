@@ -10,7 +10,10 @@
   "machineName": "H5PEditor.ImpressPresentation",
   "preloadedCss": [
     {
-      "path": "impress-editor.css"
+      "path": "styles/impress-editor.css"
+    },
+    {
+      "path": "styles/step-preview-list.css"
     }
   ],
   "preloadedJs": [
@@ -19,6 +22,9 @@
     },
     {
       "path": "scripts/step-dialog.js"
+    },
+    {
+      "path": "scripts/step-preview-list.js"
     },
     {
       "path": "scripts/menus/navigation-menu.js"

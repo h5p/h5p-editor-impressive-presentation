@@ -13,7 +13,7 @@
 H5PEditor.widgets.impressPresentationEditor =
 H5PEditor.ImpressPresentationEditor =
 (function ($, JoubelUI, MainMenu, FreeTransform, CoreMenu, OrderingMenu, TransformMenu,
-           StepDialog, EditingStep, ActiveStep, ModeDisplay) {
+           StepDialog, EditingStep, ActiveStep, ModeDisplay, StepPreviewList) {
 
   /**
    * Initialize interactive video editor.
@@ -114,6 +114,8 @@ H5PEditor.ImpressPresentationEditor =
       self.passReadies = false;
     });
 
+    // Live preview step selector
+    self.stepPreviewList = new StepPreviewList().appendTo(self.$preview);
 
     self.editingStep = new EditingStep(self);
 
@@ -152,9 +154,17 @@ H5PEditor.ImpressPresentationEditor =
      */
     self.mainMenu = new MainMenu(self)
       .appendTo(self.$wrapper);
+
+
+    setTimeout(function () {
+      self.stepPreviewList.resize();
+    }, 300);
+
+    self.stepPreviewList.on('selectedStep', function (e) {
+      self.IP.goToStep(e.data);
+    });
+
   }
-
-
 
   /**
    * Create preview of Impressive Presentation
@@ -177,6 +187,8 @@ H5PEditor.ImpressPresentationEditor =
       });
 
       self.registerEnterStepListener(step);
+
+      self.stepPreviewList.addStep(step);
     });
 
     self.IP.attach(self.$preview);
@@ -637,7 +649,8 @@ H5PEditor.ImpressPresentationEditor =
   H5PEditor.ImpressPresentationEditor.StepDialog,
   H5PEditor.ImpressPresentationEditor.EditingStep,
   H5PEditor.ImpressPresentationEditor.ActiveStep,
-  H5PEditor.ImpressPresentationEditor.ModeDisplay
+  H5PEditor.ImpressPresentationEditor.ModeDisplay,
+  H5PEditor.ImpressPresentationEditor.StepPreviewList
 ));
 
 // Default english translations
@@ -664,6 +677,7 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     editingStep: 'Editing step:',
     activeStep: 'Active step:',
     orderSteps: 'Order steps',
-    routeListText: 'Reorder a step by dragging it to a new place'
+    routeListText: 'Reorder a step by dragging it to a new place',
+    preview: "Previews"
   }
 };
