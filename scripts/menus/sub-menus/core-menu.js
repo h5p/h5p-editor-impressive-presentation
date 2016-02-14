@@ -55,7 +55,7 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       $.extend(true, newStepParams.positioning, activeStepParams.positioning);
 
       // Create step, example content and activate it
-      var newStep = IP.createStep(newStepParams, true, $activeStep)
+      var newStep = IP.createStep(newStepParams, {addToParams: true, insertAfter: $activeStep})
         .createExampleContent(IPEditor.field.fields[0].field.fields[0].options)
         .activateStep(IP.$jmpress);
 

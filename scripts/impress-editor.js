@@ -12,8 +12,9 @@
  */
 H5PEditor.widgets.impressPresentationEditor =
 H5PEditor.ImpressPresentationEditor =
-(function ($, JoubelUI, MainMenu, FreeTransform, CoreMenu, OrderingMenu, TransformMenu,
-           StepDialog, EditingStep, ActiveStep, ModeDisplay, StepPreviewList) {
+(function ($, JoubelUI, MainMenu, FreeTransform, CoreMenu, OrderingMenu,
+           TransformMenu, StepDialog, EditingStep, ActiveStep, ModeDisplay,
+           StepPreviewList, OverviewStep) {
 
   /**
    * Initialize interactive video editor.
@@ -117,6 +118,9 @@ H5PEditor.ImpressPresentationEditor =
     // Live preview step selector
     self.stepPreviewList = new StepPreviewList(self.emptyParams).appendTo(self.$preview);
 
+    // Overview step
+    self.overviewStep = new OverviewStep(self);
+
     self.editingStep = new EditingStep(self);
 
     self.activeStep = new ActiveStep(self);
@@ -171,6 +175,10 @@ H5PEditor.ImpressPresentationEditor =
 
   }
 
+  ImpressPresentationEditor.prototype.createStep = function (params, options) {
+    return this.IP.createStep(params, options);
+  };
+
   /**
    * Create preview of Impressive Presentation
    */
@@ -205,10 +213,16 @@ H5PEditor.ImpressPresentationEditor =
   };
 
   /**
-   * Remove currently editing step
+   * Remove step
+   *
+   * @param {Object} [options]
+   * @param {number} [options.stepId]
+   * @param {H5P.ImpressPresentation.Step} [options.goToStep]
+   * @param {boolean} [options.skipConfirmation]
    */
-  ImpressPresentationEditor.prototype.removeStep = function () {
-    var editingStepId = this.getEditingStep();
+  ImpressPresentationEditor.prototype.removeStep = function (options) {
+    options = options || {};
+    var editingStepId = options.stepId || this.getEditingStep();
 
     // Too few steps
     if (this.IP.getStepCount() <= 1) {
@@ -216,18 +230,24 @@ H5PEditor.ImpressPresentationEditor =
       return;
     }
 
-    if (confirm(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStep', {}))) {
+    if (options.skipConfirmation || confirm(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStep', {}))) {
       var editingStep = this.IP.getStep(editingStepId);
       var activeStepID = this.getUniqueId(this.IP.$jmpress.jmpress('active'));
 
-      // Move to previous step if on the deleted step
-      if (activeStepID === editingStepId) {
-        this.IP.$jmpress.jmpress('prev');
-      }
       editingStep.removeStep(this.IP.$jmpress);
-      this.IP.removeStep(editingStep.getId());
+      this.IP.removeStep(editingStepId);
       this.removeStepFromSelector(editingStep);
       this.stepPreviewList.removeStep(editingStep);
+
+      // Move to previous step if on the deleted step
+      if (options.goToStep) {
+        this.IP.goToStep(options.goToStep);
+      }
+      else {
+        if (activeStepID === editingStepId) {
+          this.IP.$jmpress.jmpress('prev');
+        }
+      }
     }
   };
 
@@ -421,6 +441,7 @@ H5PEditor.ImpressPresentationEditor =
     var $step = step.getElement();
     $step.on('enterStep', function () {
       self.activeStep.setActiveStepDisplay(step);
+      self.overviewStep.enteredStep(step);
     });
   };
 
@@ -668,6 +689,8 @@ H5PEditor.ImpressPresentationEditor =
     // Register route in semantics
     self.params.route = self.IP.route;
 
+    //TODO: remove overview step if it exists
+
     // Always valid
     return true;
   };
@@ -709,7 +732,8 @@ H5PEditor.ImpressPresentationEditor =
   H5PEditor.ImpressPresentationEditor.EditingStep,
   H5PEditor.ImpressPresentationEditor.ActiveStep,
   H5PEditor.ImpressPresentationEditor.ModeDisplay,
-  H5PEditor.ImpressPresentationEditor.StepPreviewList
+  H5PEditor.ImpressPresentationEditor.StepPreviewList,
+  H5PEditor.ImpressPresentationEditor.OverviewStep
 ));
 
 // Default english translations
@@ -737,6 +761,8 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     activeStep: 'Active step:',
     orderSteps: 'Order steps',
     routeListText: 'Reorder a step by dragging it to a new place',
-    preview: "Previews"
+    preview: "Previews",
+    showOverview: "Show overview",
+    showingOverview: 'Overview'
   }
 };

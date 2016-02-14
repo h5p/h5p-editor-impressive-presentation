@@ -20,6 +20,9 @@
     },
     {
       "path": "styles/step-navigation.css"
+    },
+    {
+      "path": "styles/menu-buttons.css"
     }
   ],
   "preloadedJs": [
@@ -46,6 +49,9 @@
     },
     {
       "path": "scripts/menus/sub-menus/transform-menu.js"
+    },
+    {
+      "path": "scripts/menus/step-navigation/overview-step.js"
     },
     {
       "path": "scripts/menus/step-navigation/active-step.js"

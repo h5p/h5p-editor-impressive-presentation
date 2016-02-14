@@ -44,9 +44,13 @@ H5PEditor.ImpressPresentationEditor.ActiveStep = (function ($, JoubelUI) {
       IPEditor.updateActiveStepDisplay($(this).val());
     }).val(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'step', {}) + ' 0');
 
+    // Create overview button
+    IPEditor.overviewStep.appendTo($activeStepDisplayWrapper);
+
     this.setActiveStepDisplay = function (step) {
       var stepName = step.getName();
       $activeStepDisplay.val(stepName);
+      IPEditor.overviewStep.setStep(step);
     };
 
     this.appendTo = function ($wrapper) {
