@@ -115,7 +115,7 @@ H5PEditor.ImpressPresentationEditor =
     });
 
     // Live preview step selector
-    self.stepPreviewList = new StepPreviewList().appendTo(self.$preview);
+    self.stepPreviewList = new StepPreviewList(self.emptyParams).appendTo(self.$preview);
 
     self.editingStep = new EditingStep(self);
 
@@ -157,11 +157,16 @@ H5PEditor.ImpressPresentationEditor =
 
 
     setTimeout(function () {
-      self.stepPreviewList.resize();
+      self.stepPreviewList.resize()
+        .toggleDynamicResizing();
     }, 300);
 
     self.stepPreviewList.on('selectedStep', function (e) {
       self.IP.goToStep(e.data);
+    });
+
+    self.freeTransform.on('mouseUp', function (e) {
+      self.stepPreviewList.addStep(e.data);
     });
 
   }
@@ -184,15 +189,56 @@ H5PEditor.ImpressPresentationEditor =
       // Listen for library (re)creation in Step
       step.on('createdLibraryElement', function () {
         step.disableContentInteraction();
+        self.stepPreviewList.addStep(step);
+      });
+
+      step.on('changedBackground', function () {
+        self.stepPreviewList.addStep(step);
       });
 
       self.registerEnterStepListener(step);
-
       self.stepPreviewList.addStep(step);
     });
 
     self.IP.attach(self.$preview);
     self.editingStepId = self.getUniqueId(self.IP.$jmpress.jmpress('active'));
+  };
+
+  /**
+   * Remove currently editing step
+   */
+  ImpressPresentationEditor.prototype.removeStep = function () {
+    var editingStepId = this.getEditingStep();
+
+    // Too few steps
+    if (this.IP.getStepCount() <= 1) {
+      this.IP.createErrorMessage(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStepError', {}));
+      return;
+    }
+
+    if (confirm(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStep', {}))) {
+      var editingStep = this.IP.getStep(editingStepId);
+      var activeStepID = this.getUniqueId(this.IP.$jmpress.jmpress('active'));
+
+      // Move to previous step if on the deleted step
+      if (activeStepID === editingStepId) {
+        this.IP.$jmpress.jmpress('prev');
+      }
+      editingStep.removeStep(this.IP.$jmpress);
+      this.IP.removeStep(editingStep.getId());
+      this.removeStepFromSelector(editingStep);
+      this.stepPreviewList.removeStep(editingStep);
+    }
+  };
+
+
+  /**
+   * Remove step from selector
+   *
+   * @param {H5P.ImpressPresentation.Step} step Step to be removed
+   */
+  ImpressPresentationEditor.prototype.removeStepFromSelector = function (step) {
+    this.editingStep.removeStep(step);
   };
 
   /**
@@ -338,6 +384,7 @@ H5PEditor.ImpressPresentationEditor =
     activeStep.setName(newName);
     self.updateStepInSelector(activeStep);
     self.activeStep.setActiveStepDisplay(activeStep);
+    self.stepPreviewList.updateTitle(activeStep);
 
     return this;
   };
@@ -510,6 +557,18 @@ H5PEditor.ImpressPresentationEditor =
    */
   ImpressPresentationEditor.prototype.getEditingStep = function () {
     return this.editingStepId;
+  };
+
+  /**
+   * Set editing step
+   *
+   * @param [step]
+   */
+  ImpressPresentationEditor.prototype.setEditingStep = function (step) {
+    var stepId = step ? step.getId() : this.getUniqueId(this.IP.$jmpress.jmpress('active'));
+    this.editingStep.updateButtonBar(stepId);
+
+    return this;
   };
 
   /**

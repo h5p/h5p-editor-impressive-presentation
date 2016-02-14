@@ -141,7 +141,6 @@ H5PEditor.ImpressPresentationEditor.OrderingMenu = function ($, JoubelUI) {
       // Hide jmpress
       IPEditor.IP.$jmpress.addClass('hide');
 
-      debugger;
       // Show library form and set dialog done callback
       IPEditor.stepDialog.append($routeListDialog)
         .show()

@@ -14,6 +14,12 @@
     },
     {
       "path": "styles/step-preview-list.css"
+    },
+    {
+      "path": "styles/step-dialog.css"
+    },
+    {
+      "path": "styles/step-navigation.css"
     }
   ],
   "preloadedJs": [

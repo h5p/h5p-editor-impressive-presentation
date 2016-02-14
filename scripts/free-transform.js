@@ -3,9 +3,14 @@ H5PEditor.ImpressPresentationEditor = H5PEditor.ImpressPresentationEditor || {};
 /**
  * Free Transform helper class for Impressive Presentation
  */
-H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
+H5PEditor.ImpressPresentationEditor.FreeTransform = (function (EventDispatcher) {
 
   function FreeTransform(IP, IPEditor) {
+
+    EventDispatcher.call(this);
+
+    var self = this;
+
     /**
      * Keeps track of dragging mouse state.
      * @type {boolean}
@@ -169,6 +174,8 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         IPEditor.updateStep(IPEditor.editingStepId);
         IPEditor.reselectStep();
         IPEditor.updateSemantics();
+
+        self.trigger('mouseUp', editingStep);
       }
 
       H5P.$window.off('mousemove').off('mouseup');
@@ -300,6 +307,9 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
     };
   }
 
+  FreeTransform.prototype = Object.create(EventDispatcher.prototype);
+  FreeTransform.prototype.constructor = FreeTransform;
+
   return FreeTransform;
 
-}());
+}(H5P.EventDispatcher));

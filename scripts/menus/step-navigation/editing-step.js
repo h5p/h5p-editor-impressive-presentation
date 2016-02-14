@@ -36,9 +36,13 @@ H5PEditor.ImpressPresentationEditor.EditingStep = (function ($, JoubelUI) {
       'class': 'h5p-select-go-to',
       'title': goToTitle
     }).click(function () {
-      IPEditor.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + self.editingStepId);
+      IPEditor.IP.$jmpress.jmpress('goTo', '#' + H5P.ImpressPresentation.ID_PREFIX + IPEditor.editingStepId);
       IPEditor.IP.refocusView();
     }).appendTo($selectorContainer);
+
+    var getOption = function (step) {
+      return $stepSelector.find('option[value=' + step.getId() + ']');
+    };
 
     this.updateButtonBar = function (stepId) {
       $stepSelector.val(stepId);
@@ -54,12 +58,15 @@ H5PEditor.ImpressPresentationEditor.EditingStep = (function ($, JoubelUI) {
       $stepSelector.append($option);
     };
 
+    this.removeStep = function (step) {
+      getOption(step).remove();
+
+      // Make sure we update step selector, in case we deleted current step
+      $stepSelector.change();
+    };
+
     this.updateStepName = function (step) {
-      var stepId = step.getId();
-      $stepSelector.find('option[value=' + stepId + ']')
-        .each(function () {
-          $(this).text(step.getName());
-        });
+      getOption(step).text(step.getName());
     };
   }
 

@@ -37,33 +37,15 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       'class': 'h5p-bottom-button',
       'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'remove', {})
     }).click(function () {
-      removeStep();
+      IPEditor.removeStep();
       IP.refocusView();
       return false;
     }).appendTo($coreButtonBar);
 
     /**
-     * Remove step from selector
-     *
-     * @param {H5P.ImpressPresentation.Step} step Step to be removed
-     */
-    var removeStepFromSelector = function (step) {
-      var stepId = step.getId();
-      IPEditor.$stepSelector.children().each(function () {
-        if (parseInt($(this).val()) === stepId) {
-          $(this).remove();
-        }
-      });
-
-      // Update editing slide in case we were editing this step.
-      IPEditor.$stepSelector.change();
-    };
-
-    /**
      * Add new step at active step position and go to new step.
      */
     var addStep = function () {
-      //TODO: Should be a class for step, just get active step then extract id and params
       var $activeStep = IP.$jmpress.jmpress('active');
       var activeStepParams = IP.getStep(IPEditor.getUniqueId($activeStep)).getParams();
 
@@ -90,32 +72,6 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
 
       IPEditor.updateActiveStepDisplay(newStep.getName());
       IPEditor.editingStep.updateButtonBar(newStepId);
-    };
-
-    /**
-     * Remove currently editing step
-     */
-    var removeStep = function () {
-      var editingStepId = IPEditor.getEditingStep();
-
-      // Too few steps
-      if (IP.getStepCount() <= 1) {
-        IP.createErrorMessage(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStepError', {}));
-        return;
-      }
-
-      if (confirm(H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'removeStep', {}))) {
-        var editingStep = IP.getStep(editingStepId);
-        var activeStepID = IPEditor.getUniqueId(IP.$jmpress.jmpress('active'));
-
-        // Move to previous step if on the deleted step
-        if (activeStepID === editingStepId) {
-          IP.$jmpress.jmpress('prev');
-        }
-        editingStep.removeStep(IP.$jmpress);
-        IP.removeStep(editingStep.getId());
-        removeStepFromSelector(editingStep);
-      }
     };
 
     this.createButton = function (clickCallback) {
