@@ -118,6 +118,9 @@ H5PEditor.ImpressPresentationEditor =
     // Live preview step selector
     self.stepPreviewList = new StepPreviewList(self.emptyParams).appendTo(self.$preview);
 
+    // Ordering Menu
+    self.orderingMenu = new OrderingMenu(self);
+
     // Overview step
     self.overviewStep = new OverviewStep(self);
 
@@ -149,9 +152,6 @@ H5PEditor.ImpressPresentationEditor =
 
     // Transform Menu
     self.transformMenu = new TransformMenu(self, self.IP);
-
-    // Ordering Menu
-    self.orderingMenu = new OrderingMenu(self);
 
     /**
      * Create main menu and attach it to editor wrapper

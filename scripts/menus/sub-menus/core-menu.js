@@ -25,7 +25,7 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       'class': 'h5p-bottom-button',
       'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'add', {})
     }).click(function () {
-      addStep();
+      addStep(IPEditor.overviewStep.getActiveStep());
       IP.refocusView();
       return false;
     }).appendTo($coreButtonBar);
@@ -37,17 +37,28 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       'class': 'h5p-bottom-button',
       'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'remove', {})
     }).click(function () {
-      IPEditor.removeStep();
-      IP.refocusView();
+      // Exit overview step
+      if (IPEditor.overviewStep.getActiveStep().isOverviewStep()) {
+        IPEditor.overviewStep.removeOverviewStep();
+      }
+      else {
+        // Remove editing step
+        IPEditor.removeStep();
+        IP.refocusView();
+      }
       return false;
     }).appendTo($coreButtonBar);
 
     /**
      * Add new step at active step position and go to new step.
+     *
+     * @param [step]
      */
-    var addStep = function () {
-      var $activeStep = IP.$jmpress.jmpress('active');
-      var activeStepParams = IP.getStep(IPEditor.getUniqueId($activeStep)).getParams();
+    var addStep = function (step) {
+      step = step || IP.getStep(IPEditor.getUniqueId(IP.$jmpress.jmpress('active')));
+
+      var $activeStep = step.getElement();
+      var activeStepParams = step.getParams();
 
       // Initialize new step at the position of active step
       var newStepParams = $.extend(true, {}, IPEditor.defaults);

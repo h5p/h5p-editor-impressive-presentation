@@ -17,6 +17,7 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
         throw new ReferenceError('No current step set!');
       }
 
+      $overviewButton.addClass('active');
       var params = currentStep.getParams();
 
       // Strip params of library data
@@ -31,11 +32,29 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
 
       // Increase positioning to a point where we see straight at the step and can see
       // the whole step.
-      newStepParams.positioning.z += 2000;
+      console.log("new step params", newStepParams.positioning);
+      var distanceMultiple = 2000;
+      var xRad = (Math.abs(newStepParams.positioning.rotateX) * Math.PI) / 180;
+      var yRad = (Math.abs(newStepParams.positioning.rotateY) * Math.PI) / 180;
+      console.log("radians", xRad, yRad);
+
+      var xMultiple = Math.sin(xRad);
+      var yMultiple = Math.sin(yRad);
+      var zMultiple = Math.cos(yRad) * Math.cos(xRad);
+      //var zMultiple = Math.cos((Math.abs(newStepParams.positioning.rotateZ) * Math.PI) / 180);
+      console.log("rotations", newStepParams.positioning.rotateX, newStepParams.positioning.rotateY, newStepParams.positioning.rotateZ);
+      console.log("multiples)", xMultiple, yMultiple, zMultiple);
+      newStepParams.positioning.x -= (yMultiple * distanceMultiple);
+      newStepParams.positioning.y += (xMultiple * distanceMultiple);
+      newStepParams.positioning.z += (zMultiple * distanceMultiple);
+
+      // absolute value of rotateY divided by 180 determines direction of positioning, 90 means 0
+
+      console.log("updated params", newStepParams.positioning);
 
       // Create step, example content and activate it
       overviewStep = IPEditor.createStep(newStepParams, {addToParams: true, insertAfter: currentStep.getElement()})
-        .isOverviewStep(true)
+        .setOverviewStep(true)
         .activateStep(IPEditor.IP.$jmpress);
 
       IPEditor.createLibrarySemantics(overviewStep)
@@ -48,7 +67,6 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
     };
 
     var toggleOverviewStep = function () {
-      $overviewButton.toggleClass('active', !overviewStep);
       if (overviewStep) {
         self.removeOverviewStep();
       }
@@ -73,6 +91,7 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
 
     this.removeOverviewStep = function () {
       if (overviewStep) {
+        $overviewButton.removeClass('active');
         var overviewStepId = overviewStep.getId();
         overviewStep = undefined;
         IPEditor.removeStep({
@@ -87,7 +106,7 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
 
     this.enteredStep = function (step) {
       if (!step.isOverviewStep()) {
-        this.removeOverviewStep();
+        self.removeOverviewStep();
       }
 
       return this;
@@ -100,6 +119,14 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
       }
 
       return this;
+    };
+
+    this.getCurrentStep = function () {
+      return currentStep;
+    };
+
+    this.getActiveStep = function () {
+      return overviewStep ? overviewStep : currentStep;
     };
 
     this.appendTo = function ($wrapper) {
