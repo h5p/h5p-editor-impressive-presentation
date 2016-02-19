@@ -61,6 +61,11 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       // Extend positions
       $.extend(true, newStepParams.positioning, activeStepParams.positioning);
 
+      // Reset rotation, force textual input for rotation since UX for rotation is hard
+      newStepParams.positioning.rotateX = 0;
+      newStepParams.positioning.rotateY = 0;
+      newStepParams.positioning.rotateZ = 0;
+
       // Create step, example content and activate it
       var newStep = IP.createStep(newStepParams, {addToParams: true, insertAfter: $activeStep})
         .createExampleContent(IPEditor.field.fields[0].field.fields[0].options)

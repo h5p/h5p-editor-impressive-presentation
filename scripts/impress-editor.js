@@ -442,6 +442,7 @@ H5PEditor.ImpressPresentationEditor =
     $step.on('enterStep', function () {
       if (self.activeStep) {
         self.activeStep.setActiveStepDisplay(step);
+        self.setEditingStep(step);
       }
     });
   };

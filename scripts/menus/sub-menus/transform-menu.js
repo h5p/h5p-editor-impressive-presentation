@@ -23,7 +23,7 @@ H5PEditor.ImpressPresentationEditor.TransformMenu = function ($, JoubelUI) {
      */
     var toggleButtonState = function ($modeButton, enable) {
       $moveModeButton.removeClass('active');
-      $rotateModeButton.removeClass('active');
+      //$rotateModeButton.removeClass('active');
       $transformModeButton.removeClass('active');
       if (enable) {
         $modeButton.addClass('active');
@@ -44,15 +44,17 @@ H5PEditor.ImpressPresentationEditor.TransformMenu = function ($, JoubelUI) {
 
     /**
      * Rotate mode button
+     *
+     * Removed for now, was too hard to use, restricted to textual input
      */
-    var $rotateModeButton = JoubelUI.createButton({
+/*    var $rotateModeButton = JoubelUI.createButton({
       'class': 'h5p-bottom-button',
       'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor.TransformMenu', 'rotateStep', {})
     }).click(function () {
       var enabled = IPEditor.toggleMode(H5PEditor.ImpressPresentationEditor.ROTATE);
       toggleButtonState($(this), enabled);
       IP.refocusView();
-    }).appendTo($transformButtonBar);
+    }).appendTo($transformButtonBar);*/
 
     /**
      * Transform mode button
