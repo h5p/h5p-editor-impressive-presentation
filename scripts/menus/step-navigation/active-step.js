@@ -20,6 +20,7 @@ H5PEditor.ImpressPresentationEditor.ActiveStep = (function ($, JoubelUI) {
 
       // Set editing step to active step
       IPEditor.setEditingStep();
+      IPEditor.refocusView();
 
     }).appendTo($activeStepDisplayWrapper);
 
@@ -50,7 +51,6 @@ H5PEditor.ImpressPresentationEditor.ActiveStep = (function ($, JoubelUI) {
     this.setActiveStepDisplay = function (step) {
       var stepName = step.getName();
       $activeStepDisplay.val(stepName);
-      IPEditor.overviewStep.setStep(step);
     };
 
     this.appendTo = function ($wrapper) {

@@ -25,7 +25,7 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       'class': 'h5p-bottom-button',
       'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'add', {})
     }).click(function () {
-      addStep(IPEditor.overviewStep.getActiveStep());
+      addStep();
       IP.refocusView();
       return false;
     }).appendTo($coreButtonBar);
@@ -37,15 +37,11 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
       'class': 'h5p-bottom-button',
       'html': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'remove', {})
     }).click(function () {
-      // Exit overview step
-      if (IPEditor.overviewStep.getActiveStep().isOverviewStep()) {
-        IPEditor.overviewStep.removeOverviewStep();
-      }
-      else {
-        // Remove editing step
-        IPEditor.removeStep();
-        IP.refocusView();
-      }
+
+      // Remove editing step
+      IPEditor.removeStep();
+      IP.refocusView();
+
       return false;
     }).appendTo($coreButtonBar);
 

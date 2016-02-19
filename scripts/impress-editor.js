@@ -121,12 +121,7 @@ H5PEditor.ImpressPresentationEditor =
     // Ordering Menu
     self.orderingMenu = new OrderingMenu(self);
 
-    // Overview step
-    self.overviewStep = new OverviewStep(self);
-
     self.editingStep = new EditingStep(self);
-
-    self.activeStep = new ActiveStep(self);
 
     self.modeDisplay = new ModeDisplay(self);
 
@@ -134,6 +129,11 @@ H5PEditor.ImpressPresentationEditor =
 
     // Create preview
     self.createPreview();
+
+    // Overview step
+    self.overviewStep = new OverviewStep(self);
+
+    self.activeStep = new ActiveStep(self);
 
     // Create example content if no params
     if (self.emptyParams) {
@@ -440,8 +440,9 @@ H5PEditor.ImpressPresentationEditor =
     var self = this;
     var $step = step.getElement();
     $step.on('enterStep', function () {
-      self.activeStep.setActiveStepDisplay(step);
-      self.overviewStep.enteredStep(step);
+      if (self.activeStep) {
+        self.activeStep.setActiveStepDisplay(step);
+      }
     });
   };
 
@@ -683,16 +684,55 @@ H5PEditor.ImpressPresentationEditor =
 
   };
 
+  /**
+   * Validate content
+   *
+   * @returns {boolean} True, always valid
+   */
   ImpressPresentationEditor.prototype.validate = function () {
-    var self = this;
-
     // Register route in semantics
-    self.params.route = self.IP.route;
-
-    //TODO: remove overview step if it exists
+    this.params.route = this.IP.route;
 
     // Always valid
     return true;
+  };
+
+
+  /**
+   * Get current viewport settings
+   *
+   * @returns {{height: {number}, width: {number}}}
+   */
+  ImpressPresentationEditor.prototype.getViewport = function () {
+    var viewportSettings = this.IP.$jmpress.jmpress('settings').viewPort;
+    return {height: viewportSettings.height, width: viewportSettings.width};
+  };
+
+  /**
+   * Set viewport
+   *
+   * @param {Object} viewport
+   * @param {number} viewport.height
+   * @param {number} viewport.width
+   */
+  ImpressPresentationEditor.prototype.setViewport = function (viewport) {
+    var viewportSettings = this.IP.$jmpress.jmpress('settings').viewPort;
+    viewportSettings.height = viewport.height;
+    viewportSettings.width = viewport.width;
+  };
+
+  /**
+   * Refocus view.
+   */
+  ImpressPresentationEditor.prototype.refocusView = function () {
+    this.IP.refocusView();
+  };
+
+  /**
+   * Refresh view
+   */
+  ImpressPresentationEditor.prototype.refreshView = function () {
+    this.IP.$jmpress.jmpress('reselect');
   };
 
   /**
