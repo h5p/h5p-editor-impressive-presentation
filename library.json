@@ -16,6 +16,9 @@
       "path": "styles/step-preview-list.css"
     },
     {
+      "path": "styles/numeric-step-input.css"
+    },
+    {
       "path": "styles/step-dialog.css"
     },
     {
@@ -34,6 +37,9 @@
     },
     {
       "path": "scripts/step-preview-list.js"
+    },
+    {
+      "path": "scripts/numeric-step-input.js"
     },
     {
       "path": "scripts/menus/navigation-menu.js"

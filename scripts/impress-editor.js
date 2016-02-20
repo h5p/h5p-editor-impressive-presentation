@@ -14,7 +14,7 @@ H5PEditor.widgets.impressPresentationEditor =
 H5PEditor.ImpressPresentationEditor =
 (function ($, JoubelUI, MainMenu, FreeTransform, CoreMenu, OrderingMenu,
            TransformMenu, StepDialog, EditingStep, ActiveStep, ModeDisplay,
-           StepPreviewList, OverviewStep) {
+           StepPreviewList, OverviewStep, NumericStepInput) {
 
   /**
    * Initialize interactive video editor.
@@ -118,6 +118,12 @@ H5PEditor.ImpressPresentationEditor =
     // Live preview step selector
     self.stepPreviewList = new StepPreviewList(self.emptyParams).appendTo(self.$preview);
 
+    // Numeric step input menu
+    self.numericStepInput = new NumericStepInput().appendTo(self.$preview);
+    self.numericStepInput.on('inputChanged', function (e) {
+      self.updateEditingStep(e.data.property, e.data.value);
+    });
+
     // Ordering Menu
     self.orderingMenu = new OrderingMenu(self);
 
@@ -180,6 +186,22 @@ H5PEditor.ImpressPresentationEditor =
   };
 
   /**
+   * Update editing step
+   *
+   * @param {string} prop Step params property
+   * @param {number} value Property value
+   * @returns {H5PEditor.ImpressPresentationEditor}
+   */
+  ImpressPresentationEditor.prototype.updateEditingStep = function (prop, value) {
+    var step = this.IP.getStep(this.getEditingStep());
+    step.updateStepProp(prop, value);
+    this.updateStep(step.getId());
+    this.reselectStep();
+
+    return this;
+  };
+
+  /**
    * Create preview of Impressive Presentation
    */
   ImpressPresentationEditor.prototype.createPreview = function () {
@@ -209,7 +231,7 @@ H5PEditor.ImpressPresentationEditor =
     });
 
     self.IP.attach(self.$preview);
-    self.editingStepId = self.getUniqueId(self.IP.$jmpress.jmpress('active'));
+    self.setEditingStep();
   };
 
   /**
@@ -250,7 +272,6 @@ H5PEditor.ImpressPresentationEditor =
       }
     }
   };
-
 
   /**
    * Remove step from selector
@@ -588,8 +609,12 @@ H5PEditor.ImpressPresentationEditor =
    * @param [step]
    */
   ImpressPresentationEditor.prototype.setEditingStep = function (step) {
-    var stepId = step ? step.getId() : this.getUniqueId(this.IP.$jmpress.jmpress('active'));
+    step = step || this.IP.getStep(this.getUniqueId(this.IP.$jmpress.jmpress('active')));
+    var stepId = step.getId();
     this.editingStep.updateButtonBar(stepId);
+
+    // Update numeric step input
+    this.numericStepInput.setStep(step);
 
     return this;
   };
@@ -679,6 +704,7 @@ H5PEditor.ImpressPresentationEditor =
     }
 
     self.IP.$jmpress.jmpress('reapply', $updateStep);
+    self.numericStepInput.setStep();
   };
 
   ImpressPresentationEditor.prototype.remove = function () {
@@ -774,7 +800,8 @@ H5PEditor.ImpressPresentationEditor =
   H5PEditor.ImpressPresentationEditor.ActiveStep,
   H5PEditor.ImpressPresentationEditor.ModeDisplay,
   H5PEditor.ImpressPresentationEditor.StepPreviewList,
-  H5PEditor.ImpressPresentationEditor.OverviewStep
+  H5PEditor.ImpressPresentationEditor.OverviewStep,
+  H5PEditor.ImpressPresentationEditor.NumericStepInput
 ));
 
 // Default english translations
@@ -804,6 +831,13 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     routeListText: 'Reorder a step by dragging it to a new place',
     preview: "Previews",
     showOverview: "Show overview",
-    showingOverview: 'Overview'
+    showingOverview: 'Overview',
+    stepConfiguration: 'Step configuration',
+    xLabel: 'Position X',
+    yLabel: 'Position Y',
+    zLabel: 'Position Z',
+    xRotLabel: 'Rotation X',
+    yRotLabel: 'Rotation Y',
+    zRotLabel: 'Rotation Z'
   }
 };

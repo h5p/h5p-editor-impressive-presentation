@@ -33,8 +33,17 @@
   opacity: 0.8;
 }
 
+.h5p-impress-step-preview-list.hidden .h5p-impress-step-preview-list-toggle {
+  right: -1.9em;
+  padding: 0.25em 0.5em;
+}
+
+.h5p-impress-step-preview-list .fa-angle-double-left:before {
+  content: "\f100";
+}
+
 .h5p-impress-step-preview-list.hidden .fa-angle-double-left:before {
-  content: "\f101";
+  content: "\f0cb";
 }
 
 .h5p-impress-step-preview-list-title {
