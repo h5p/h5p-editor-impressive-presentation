@@ -33,7 +33,7 @@
       "path": "scripts/libs/sortable-lib.js"
     },
     {
-      "path": "scripts/step-dialog.js"
+      "path": "scripts/sub-menus/step-dialog.js"
     },
     {
       "path": "scripts/side-menus/step-preview-list.js"

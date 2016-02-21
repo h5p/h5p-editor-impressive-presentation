@@ -305,99 +305,6 @@ H5PEditor.ImpressPresentationEditor =
     self.resize();
   };
 
-  ImpressPresentationEditor.prototype.editStepBackground = function (step) {
-    var self = this;
-    step = step ? step : self.IP.getStep(self.editingStepId);
-
-    // Hide jmpress
-    self.IP.$jmpress.addClass('hide');
-
-    // Show library form and set dialog done callback
-    self.stepDialog.append(step.getBackgroundForm())
-      .show()
-      .setDialogDoneCallback(function () {
-        var valid = true;
-        step.children.forEach(function (child) {
-          if (!child.validate()) {
-            valid = false;
-          }
-        });
-
-        if (valid) {
-          step.setBackground(self.IP.contentId);
-          self.doneStepBackground(step);
-        }
-      });
-  };
-
-  /**
-   * Edit step content, show form.
-   * @param {H5P.ImpressPresentation.Step} [step]
-   */
-  ImpressPresentationEditor.prototype.editStepContent = function (step) {
-    var self = this;
-    step = step ? step : self.IP.getStep(self.editingStepId);
-
-    // Hide jmpress
-    self.IP.$jmpress.addClass('hide');
-
-    // Show library form and set dialog done callback
-    self.stepDialog.append(step.getLibraryForm())
-      .show()
-      .setDialogDoneCallback(function () {
-        var valid = true;
-        step.children.forEach(function (child) {
-          if (!child.validate()) {
-            valid = false;
-          }
-        });
-
-        if (valid) {
-          if (H5PEditor.Html) {
-            H5PEditor.Html.removeWysiwyg();
-          }
-          step.updateLibrary();
-          self.doneStepContent(step);
-        }
-      });
-  };
-
-  /**
-   * Done editing step content, remove form.
-   * @param {H5P.ImpressPresentation.Step} [step]
-   */
-  ImpressPresentationEditor.prototype.doneStepContent = function (step) {
-    var self = this;
-    step = step ? step : self.IP.getStep(self.editingStepId);
-
-    // Hide library form
-    step.getLibraryForm().detach();
-    self.stepDialog.hide();
-
-    // Show jmpress
-    self.IP.$jmpress.removeClass('hide');
-
-    self.IP.refocusView();
-  };
-
-  /**
-   * Done editing step background, remove form.
-   * @param {H5P.ImpressPresentation.Step} [step]
-   */
-  ImpressPresentationEditor.prototype.doneStepBackground = function (step) {
-    var self = this;
-    step = step ? step : self.IP.getStep(self.editingStepId);
-
-    // Hide library form
-    step.getBackgroundForm().detach();
-    self.stepDialog.hide();
-
-    // Show jmpress
-    self.IP.$jmpress.removeClass('hide');
-
-    self.IP.refocusView();
-  };
-
   /**
    * Remove step from route
    *
@@ -515,6 +422,30 @@ H5PEditor.ImpressPresentationEditor =
     });
 
     H5PEditor.processSemanticsChunk(self.semanticsList.fields[2].fields, step.getParams().backgroundGroup, $libraryInstance, self);
+
+    // Find transparency checkbox
+    var transparentBackground;
+    self.children.forEach(function (child) {
+      if (child.field && child.field.name === 'transparentBackground') {
+        transparentBackground = child;
+      }
+    });
+
+    // Uncheck transparency on color or image change
+    self.children.forEach(function (child) {
+      if (child instanceof H5PEditor.ColorSelector) {
+        child.$colorPicker.on('change.spectrum', function () {
+          transparentBackground.$input.attr('checked', false);
+          transparentBackground.$input.change();
+        });
+      }
+      else if (child instanceof ns.File) {
+        child.changes.push(function () {
+          transparentBackground.$input.attr('checked', false);
+          transparentBackground.$input.change();
+        });
+      }
+    });
 
     step.setBackgroundForm($libraryInstance);
 
