@@ -5,7 +5,10 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
   function OverviewStep(IPEditor) {
 
     // Default viewport
-    var initZoom = IPEditor.getViewport();
+    var defaultViewport = {
+      height: 360,
+      width: 640
+    };
 
     // Zoom factor
     var zoomFactor = 5;
@@ -25,13 +28,13 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
 
       if (isZoomedOut) {
         // Restore defaults
-        IPEditor.setViewport(initZoom);
+        IPEditor.setViewport(defaultViewport);
       }
       else {
         // Zoom out
         IPEditor.setViewport({
-          height: initZoom.height * zoomFactor,
-          width: initZoom.width * zoomFactor
+          height: defaultViewport.height * zoomFactor,
+          width: defaultViewport.width * zoomFactor
         });
       }
       $overviewButton.toggleClass('active', !isZoomedOut);
@@ -49,6 +52,13 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
       toggleOverviewStep();
       IPEditor.refocusView();
     });
+
+    /**
+     * Update default viewport
+     */
+    this.updateDefaultViewport = function () {
+      defaultViewport = IPEditor.getViewport();
+    };
 
     /**
      * Set new zoom factor to specified value or to default.

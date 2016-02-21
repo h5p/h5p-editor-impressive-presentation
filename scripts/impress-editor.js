@@ -127,6 +127,8 @@ H5PEditor.ImpressPresentationEditor =
     // Ordering Menu
     self.orderingMenu = new OrderingMenu(self);
 
+    self.overviewStep = new OverviewStep(self);
+    self.activeStep = new ActiveStep(self);
     self.editingStep = new EditingStep(self);
 
     self.modeDisplay = new ModeDisplay(self);
@@ -135,11 +137,7 @@ H5PEditor.ImpressPresentationEditor =
 
     // Create preview
     self.createPreview();
-
-    // Overview step
-    self.overviewStep = new OverviewStep(self);
-
-    self.activeStep = new ActiveStep(self);
+    self.overviewStep.updateDefaultViewport();
 
     // Create example content if no params
     if (self.emptyParams) {
@@ -231,6 +229,7 @@ H5PEditor.ImpressPresentationEditor =
     });
 
     self.IP.attach(self.$preview);
+    self.activeStep.setActiveStepDisplay(this.IP.getStep(this.getUniqueId(this.IP.$jmpress.jmpress('active'))));
     self.setEditingStep();
   };
 
@@ -541,11 +540,7 @@ H5PEditor.ImpressPresentationEditor =
    */
   ImpressPresentationEditor.prototype.setEditingStep = function (step) {
     step = step || this.IP.getStep(this.getUniqueId(this.IP.$jmpress.jmpress('active')));
-    var stepId = step.getId();
-    this.editingStep.updateButtonBar(stepId);
-
-    // Update numeric step input
-    this.numericStepInput.setStep(step);
+    this.editingStep.updateEditingStep(step);
 
     return this;
   };

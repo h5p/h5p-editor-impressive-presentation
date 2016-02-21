@@ -26,6 +26,9 @@
     },
     {
       "path": "styles/menu-buttons.css"
+    },
+    {
+      "path": "styles/preview-styles.css"
     }
   ],
   "preloadedJs": [

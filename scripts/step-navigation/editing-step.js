@@ -5,6 +5,8 @@ H5PEditor.ImpressPresentationEditor.EditingStep = (function ($, JoubelUI) {
   function EditingStep(IPEditor) {
     var self = this;
 
+    var editingStep;
+
     // Container
     var $selectorContainer = $('<div>', {
       'class': 'h5p-select-container'
@@ -14,8 +16,8 @@ H5PEditor.ImpressPresentationEditor.EditingStep = (function ($, JoubelUI) {
     var $stepSelector = $('<select>', {
       'class': 'h5p-step-selector'
     }).change(function () {
-      var stepId = parseInt($(this).val());
-      self.updateButtonBar(stepId);
+      var step = IPEditor.IP.getStep(parseInt($(this).val()));
+      self.updateEditingStep(step);
       IPEditor.IP.refocusView();
     });
 
@@ -44,10 +46,34 @@ H5PEditor.ImpressPresentationEditor.EditingStep = (function ($, JoubelUI) {
       return $stepSelector.find('option[value=' + step.getId() + ']');
     };
 
-    this.updateButtonBar = function (stepId) {
+    /**
+     * Update editing step
+     *
+     * @param step Selected editing step
+     * @returns {H5PEditor.ImpressPresentationEditor.EditingStep}
+     */
+    this.updateEditingStep = function (step) {
+      var stepId = step.getId();
       $stepSelector.val(stepId);
       IPEditor.editingStepId = stepId;
-      IPEditor.orderingMenu.updateRouteCheckbox(IPEditor.IP.getStep(stepId));
+
+      // Remove old, add new style
+      if (editingStep) {
+        editingStep.setEditing(false);
+      }
+      editingStep = step;
+      step.setEditing(true);
+
+      // Update route
+      IPEditor.orderingMenu.updateRouteCheckbox(step);
+
+      // Update numeric step input
+      IPEditor.numericStepInput.setStep(step);
+
+      // Update preview list visuals
+      IPEditor.stepPreviewList.setEditingStep(step);
+
+      return this;
     };
 
     this.appendTo = function ($wrapper) {

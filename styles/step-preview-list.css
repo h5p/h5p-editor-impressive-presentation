@@ -105,3 +105,27 @@
   left: 50%;
   top: 50%;
 }
+
+.h5p-impress-step-preview-clone-wrapper.editing-step:after,
+.h5p-impress-step-preview-clone-wrapper.active-step:before {
+  font-family: "H5PFontAwesome4";
+  content: "\f06e";
+  position: absolute;
+  color: lightgreen;
+  border: 1px solid lightgreen;
+  top: 0.2em;
+  right: 0.1em;
+  padding: 0.3em;
+  font-size: 0.7em;
+  border-radius: 50%;
+}
+
+.h5p-impress-step-preview-clone-wrapper.editing-step:after {
+  content: "\f040";
+  color: lightcoral;
+  border: 1px solid lightcoral;
+}
+
+.h5p-impress-step-preview-clone-wrapper.active-step.editing-step:after {
+  right: 2em;
+}

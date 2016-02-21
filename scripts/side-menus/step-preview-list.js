@@ -16,6 +16,12 @@ H5PEditor.ImpressPresentationEditor.StepPreviewList = function ($, EventDispatch
     // Determine if list should be opened on init
     var hideString = initHidden ? ' hidden' : '';
 
+    // Current active step
+    var activeStep;
+
+    // Current editing step
+    var editingStep;
+
     var $stepPreviewList = $('<div>', {
       'class': 'h5p-impress-step-preview-list' + hideString
     });
@@ -93,6 +99,7 @@ H5PEditor.ImpressPresentationEditor.StepPreviewList = function ($, EventDispatch
       // Append clone
       var $clone = step.getElement()
         .clone()
+        .css('border', '') // Strip editing border
         .addClass('h5p-impress-step-preview-step-clone')
         .appendTo($cloneWrapper);
 
@@ -134,6 +141,32 @@ H5PEditor.ImpressPresentationEditor.StepPreviewList = function ($, EventDispatch
 
     this.toggleDynamicResizing = function () {
       resizeDynamically = !resizeDynamically;
+    };
+
+    /**
+     * Set active step visually in preview list.
+     *
+     * @param step
+     */
+    this.setActiveStep = function (step) {
+      if (activeStep) {
+        activeStep.$wrapper.removeClass('active-step');
+      }
+      activeStep = getClone(step);
+      activeStep.$wrapper.addClass('active-step');
+    };
+
+    /**
+     * Set editing step visually in preview list.
+     *
+     * @param step
+     */
+    this.setEditingStep = function (step) {
+      if (editingStep) {
+        editingStep.$wrapper.removeClass('editing-step');
+      }
+      editingStep = getClone(step);
+      editingStep.$wrapper.addClass('editing-step');
     };
 
     /**

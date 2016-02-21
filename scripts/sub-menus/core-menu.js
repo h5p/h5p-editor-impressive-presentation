@@ -83,7 +83,7 @@ H5PEditor.ImpressPresentationEditor.CoreMenu = (function ($, JoubelUI) {
         .goToStepId(newStepId);
 
       IPEditor.updateActiveStepDisplay(newStep.getName());
-      IPEditor.editingStep.updateButtonBar(newStepId);
+      IPEditor.setEditingStep(newStep);
     };
 
     this.createButton = function (clickCallback) {
