@@ -36,16 +36,16 @@
       "path": "scripts/step-dialog.js"
     },
     {
-      "path": "scripts/step-preview-list.js"
+      "path": "scripts/side-menus/step-preview-list.js"
     },
     {
-      "path": "scripts/numeric-step-input.js"
+      "path": "scripts/side-menus/numeric-step-input.js"
     },
     {
       "path": "scripts/menus/navigation-menu.js"
     },
     {
-      "path": "scripts/sub-menu-selector.js"
+      "path": "scripts/menus/sub-menu-selector.js"
     },
     {
       "path": "scripts/sub-menus/core-menu.js"

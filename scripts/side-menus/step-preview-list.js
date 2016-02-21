@@ -24,7 +24,7 @@ H5PEditor.ImpressPresentationEditor.StepPreviewList = function ($, EventDispatch
       $stepPreviewList.toggleClass('hidden');
     };
 
-    var $toggleList = $('<div>', {
+    $('<div>', {
       'class': 'h5p-impress-step-preview-list-toggle',
       'role': 'button',
       'tabindex': 0,
