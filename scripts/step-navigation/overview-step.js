@@ -16,6 +16,60 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
     // Current zoom state
     var isZoomedOut = false;
 
+    // Create button
+    var $overviewButton = JoubelUI.createButton({
+      'class': 'h5p-impress-overview-step-button',
+      'title': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'showOverview', {})
+    }).click(function () {
+      toggleOverviewStep();
+      IPEditor.refocusView();
+    });
+
+    // Create zoom factor widget
+    var $zoomFactorWrapper = $('<div>', {
+      'class': 'h5p-impress-overview-step-zoom-factor hidden',
+      appendTo: IPEditor.$preview
+    });
+
+    $('<div>', {
+      'class': 'h5p-impress-overview-step-zoom-factor-label',
+      html: H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'zoomFactorLabel'),
+      appendTo: $zoomFactorWrapper
+    });
+
+    var minZoom = 1;
+    var maxZoom = 20;
+    $('<input>', {
+      'class': 'h5p-impress-overview-step-zoom-factor-input',
+      type: 'number',
+      'step': 0.5,
+      'min': minZoom,
+      'max': maxZoom,
+      value: zoomFactor,
+      appendTo: $zoomFactorWrapper
+    }).bind('change keyup', function () {
+      var newValue = $(this).val();
+      if (newValue === '' || isNaN(newValue)) {
+        return;
+      }
+
+      if (newValue < minZoom) {
+        $(this).val(minZoom);
+        newValue = minZoom;
+      }
+      else if (newValue > maxZoom) {
+        $(this).val(maxZoom);
+        newValue = maxZoom;
+      }
+
+      zoomFactor = newValue;
+
+      // Set new zoom
+      if (isZoomedOut) {
+        toggleOverviewStep(true);
+      }
+    });
+
     /**
      * Toggle overview step
      *
@@ -37,6 +91,7 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
           width: defaultViewport.width * zoomFactor
         });
       }
+      $zoomFactorWrapper.toggleClass('hidden', isZoomedOut);
       $overviewButton.toggleClass('active', !isZoomedOut);
       IPEditor.refreshView();
 
@@ -44,32 +99,11 @@ H5PEditor.ImpressPresentationEditor.OverviewStep = (function ($, JoubelUI) {
       isZoomedOut = !isZoomedOut;
     };
 
-    // Create button
-    var $overviewButton = JoubelUI.createButton({
-      'class': 'h5p-impress-overview-step-button',
-      'title': H5PEditor.t('H5PEditor.ImpressPresentationEditor', 'showOverview', {})
-    }).click(function () {
-      toggleOverviewStep();
-      IPEditor.refocusView();
-    });
-
     /**
      * Update default viewport
      */
     this.updateDefaultViewport = function () {
       defaultViewport = IPEditor.getViewport();
-    };
-
-    /**
-     * Set new zoom factor to specified value or to default.
-     *
-     * @param {number} [newZoomFactor] New zoom factor
-     * @returns {H5PEditor.ImpressPresentationEditor.OverviewStep}
-     */
-    this.setZoomFactor = function (newZoomFactor) {
-      zoomFactor = newZoomFactor || 5;
-
-      return this;
     };
 
     /**

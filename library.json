@@ -29,6 +29,9 @@
     },
     {
       "path": "styles/preview-styles.css"
+    },
+    {
+      "path": "styles/overview-zoom-widget.css"
     }
   ],
   "preloadedJs": [

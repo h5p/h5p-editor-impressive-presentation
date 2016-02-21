@@ -764,6 +764,7 @@ H5PEditor.language['H5PEditor.ImpressPresentationEditor'] = {
     zLabel: 'Position Z',
     xRotLabel: 'Rotation X',
     yRotLabel: 'Rotation Y',
-    zRotLabel: 'Rotation Z'
+    zRotLabel: 'Rotation Z',
+    zoomFactorLabel: 'Zoom factor:'
   }
 };
