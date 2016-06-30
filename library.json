@@ -10,18 +10,78 @@
   "machineName": "H5PEditor.ImpressPresentation",
   "preloadedCss": [
     {
-      "path": "impress-editor.css"
+      "path": "styles/impress-editor.css"
+    },
+    {
+      "path": "styles/numeric-step-input.css"
+    },
+    {
+      "path": "styles/step-dialog.css"
+    },
+    {
+      "path": "styles/step-navigation.css"
+    },
+    {
+      "path": "styles/menu-buttons.css"
+    },
+    {
+      "path": "styles/preview-styles.css"
+    },
+    {
+      "path": "styles/step-preview-list.css"
+    },
+    {
+      "path": "styles/overview-zoom-widget.css"
     }
   ],
   "preloadedJs": [
     {
-      "path": "sortable-lib.js"
+      "path": "scripts/libs/sortable-lib.js"
     },
     {
-      "path": "free-transform.js"
+      "path": "scripts/sub-menus/step-dialog.js"
     },
     {
-      "path": "impress-editor.js"
+      "path": "scripts/side-menus/step-preview-list.js"
+    },
+    {
+      "path": "scripts/side-menus/numeric-step-input.js"
+    },
+    {
+      "path": "scripts/menus/navigation-menu.js"
+    },
+    {
+      "path": "scripts/menus/sub-menu-selector.js"
+    },
+    {
+      "path": "scripts/sub-menus/core-menu.js"
+    },
+    {
+      "path": "scripts/sub-menus/ordering-menu.js"
+    },
+    {
+      "path": "scripts/sub-menus/transform-menu.js"
+    },
+    {
+      "path": "scripts/step-navigation/overview-step.js"
+    },
+    {
+      "path": "scripts/step-navigation/active-step.js"
+    },
+    {
+      "path": "scripts/step-navigation/mode-display.js"
+    },
+    {
+      "path": "scripts/step-navigation/editing-step.js"
+    },
+    {
+      "path": "scripts/menus/main-menu.js"
+    },
+    {
+      "path": "scripts/free-transform.js"
+    },
+    {
+      "path": "scripts/impress-editor.js"
     }
   ],
   "preloadedDependencies": [
