@@ -116,7 +116,7 @@ H5PEditor.ImpressPresentationEditor =
     });
 
     // Live preview step selector
-    self.stepPreviewList = new StepPreviewList(self.emptyParams).appendTo(self.$preview);
+    self.stepPreviewList = new StepPreviewList(false).appendTo(self.$preview);
 
     // Numeric step input menu
     self.numericStepInput = new NumericStepInput().appendTo(self.$preview);

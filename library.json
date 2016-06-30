@@ -2,8 +2,8 @@
   "title": "Impress Presentation Editor",
   "description": "Live editor for editing impressive presentations.",
   "majorVersion": 1,
-  "minorVersion": 0,
-  "patchVersion": 2,
+  "minorVersion": 1,
+  "patchVersion": 0,
   "runnable": 0,
   "author": "Joubel AS",
   "license": "MIT",
@@ -11,9 +11,6 @@
   "preloadedCss": [
     {
       "path": "styles/impress-editor.css"
-    },
-    {
-      "path": "styles/step-preview-list.css"
     },
     {
       "path": "styles/numeric-step-input.css"
@@ -29,6 +26,9 @@
     },
     {
       "path": "styles/preview-styles.css"
+    },
+    {
+      "path": "styles/step-preview-list.css"
     },
     {
       "path": "styles/overview-zoom-widget.css"
@@ -88,7 +88,7 @@
     {
       "machineName": "H5P.ImpressPresentation",
       "majorVersion": 1,
-      "minorVersion": 0
+      "minorVersion": 1
     },
     {
       "machineName": "H5P.JoubelUI",
@@ -98,7 +98,7 @@
     {
       "machineName": "FontAwesome",
       "majorVersion": 4,
-      "minorVersion": 3
+      "minorVersion": 5
     },
     {
       "machineName": "H5P.AdvancedText",
@@ -108,17 +108,17 @@
     {
       "machineName": "H5P.MarkTheWords",
       "majorVersion": 1,
-      "minorVersion": 5
+      "minorVersion": 6
     },
     {
       "machineName": "H5P.SingleChoiceSet",
       "majorVersion": 1,
-      "minorVersion": 3
+      "minorVersion": 4
     },
     {
       "machineName": "H5P.Blanks",
       "majorVersion": 1,
-      "minorVersion": 4
+      "minorVersion": 6
     }
   ]
 }
