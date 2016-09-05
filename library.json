@@ -2,7 +2,7 @@
   "title": "Impress Presentation Editor",
   "description": "Live editor for editing impressive presentations.",
   "majorVersion": 1,
-  "minorVersion": 1,
+  "minorVersion": 2,
   "patchVersion": 0,
   "runnable": 0,
   "author": "Joubel AS",
@@ -88,7 +88,7 @@
     {
       "machineName": "H5P.ImpressPresentation",
       "majorVersion": 1,
-      "minorVersion": 1
+      "minorVersion": 2
     },
     {
       "machineName": "H5P.JoubelUI",

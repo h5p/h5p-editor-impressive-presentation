@@ -28,7 +28,7 @@ H5PEditor.ImpressPresentationEditor =
       action: {},
       backgroundGroup: {
         transparentBackground: true,
-        backgroundColor: 'fff',
+        backgroundColor: '#fff',
         backgroundWidth: 640,
         backgroundHeight: 360
       },
