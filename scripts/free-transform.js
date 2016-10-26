@@ -1,13 +1,16 @@
-/*global H5P*/
-var H5PEditor = H5PEditor || {};
 H5PEditor.ImpressPresentationEditor = H5PEditor.ImpressPresentationEditor || {};
 
 /**
  * Free Transform helper class for Impressive Presentation
  */
-H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
+H5PEditor.ImpressPresentationEditor.FreeTransform = (function (EventDispatcher) {
 
   function FreeTransform(IP, IPEditor) {
+
+    EventDispatcher.call(this);
+
+    var self = this;
+
     /**
      * Keeps track of dragging mouse state.
      * @type {boolean}
@@ -18,6 +21,12 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
      * Keeps track of initial mouse down position.
      */
     var initialPos;
+
+    /**
+     * Initial coordinates
+     * @type {}
+     */
+    var initialCoordinates = {};
 
     /**
      * Keeps track of mouse moved amount.
@@ -120,6 +129,17 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         editingStep = IP.getStep(IPEditor.editingStepId);
         $editingStep = editingStep.getElement();
         editingStepParams = editingStep.getParams();
+        var pos = editingStepParams.positioning;
+        initialCoordinates = {
+          x: pos.x,
+          y: pos.y,
+          z: pos.z,
+          rotateX: pos.rotateX,
+          rotateY: pos.rotateY,
+          rotateZ: pos.rotateZ,
+          backgroundWidth: editingStepParams.backgroundGroup.backgroundWidth,
+          backgroundHeight: editingStepParams.backgroundGroup.backgroundHeight
+        };
 
         // Register mouse events on body
         H5P.$window.mousemove(function (e) {
@@ -144,17 +164,17 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
       if (isDragging && (IPEditor.editModes.move || IPEditor.editModes.rotate || IPEditor.editModes.transform)) {
         isDragging = false;
         if (IPEditor.editModes.move) {
-          updateEditingStep('x', editingStepParams.positioning.x - mouseMoved.deltaX);
-          updateEditingStep('y', editingStepParams.positioning.y - mouseMoved.deltaY);
+          updateEditingStep('x', initialCoordinates.x - mouseMoved.deltaX);
+          updateEditingStep('y', initialCoordinates.y - mouseMoved.deltaY);
         }
         else if (IPEditor.editModes.rotate) {
-          updateEditingStep('rotateY', editingStepParams.positioning.rotateY - (mouseMoved.deltaX * rotateFraction));
-          updateEditingStep('rotateX', editingStepParams.positioning.rotateX - (mouseMoved.deltaY * rotateFraction));
+          updateEditingStep('rotateY', initialCoordinates.rotateY - (mouseMoved.deltaX * rotateFraction));
+          updateEditingStep('rotateX', initialCoordinates.rotateX - (mouseMoved.deltaY * rotateFraction));
 
         }
         else if (IPEditor.editModes.transform) {
-          var newWidth = editingStepParams.backgroundGroup.backgroundWidth + (mouseMoved.deltaX);
-          var newHeight = editingStepParams.backgroundGroup.backgroundHeight - (mouseMoved.deltaY);
+          var newWidth = initialCoordinates.backgroundWidth + (mouseMoved.deltaX);
+          var newHeight = initialCoordinates.backgroundHeight - (mouseMoved.deltaY);
 
           // Cap at 10px
           if (newWidth < 10) {
@@ -171,6 +191,8 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         IPEditor.updateStep(IPEditor.editingStepId);
         IPEditor.reselectStep();
         IPEditor.updateSemantics();
+
+        self.trigger('mouseUp', editingStep);
       }
 
       H5P.$window.off('mousemove').off('mouseup');
@@ -190,16 +212,16 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
         updateMouseMovedAmount(e);
 
         if (IPEditor.editModes.move) {
-          updateEditingStepView('x', editingStepParams.positioning.x - mouseMoved.deltaX);
-          updateEditingStepView('y', editingStepParams.positioning.y - mouseMoved.deltaY);
+          updateEditingStep('x', initialCoordinates.x - mouseMoved.deltaX);
+          updateEditingStep('y', initialCoordinates.y - mouseMoved.deltaY);
         }
         else if (IPEditor.editModes.rotate) {
-          updateEditingStepView('rotateY', editingStepParams.positioning.rotateY - (mouseMoved.deltaX * rotateFraction));
-          updateEditingStepView('rotateX', editingStepParams.positioning.rotateX - (mouseMoved.deltaY * rotateFraction));
+          updateEditingStep('rotateY', initialCoordinates.rotateY - (mouseMoved.deltaX * rotateFraction));
+          updateEditingStep('rotateX', initialCoordinates.rotateX - (mouseMoved.deltaY * rotateFraction));
         }
         else if (IPEditor.editModes.transform) {
-          var newWidth = editingStepParams.backgroundGroup.backgroundWidth + (mouseMoved.deltaX);
-          var newHeight = editingStepParams.backgroundGroup.backgroundHeight - (mouseMoved.deltaY);
+          var newWidth = initialCoordinates.backgroundWidth + (mouseMoved.deltaX);
+          var newHeight = initialCoordinates.backgroundHeight - (mouseMoved.deltaY);
 
           // Cap at 10px
           if (newWidth < 10) {
@@ -302,6 +324,9 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function () {
     };
   }
 
+  FreeTransform.prototype = Object.create(EventDispatcher.prototype);
+  FreeTransform.prototype.constructor = FreeTransform;
+
   return FreeTransform;
 
-}());
+}(H5P.EventDispatcher));
