@@ -1,0 +1,29 @@
+{
+  "libraryStrings": {
+    "step": "Stufe",
+    "add": "Stufe hinzufügen",
+    "remove": "Stufe löschen",
+    "moveStep": "Stufe bewegen",
+    "rotateStep": "Stufe drehen",
+    "transformStep": "Stufe transformieren",
+    "edit": "Stufeninhalt bearbeiten",
+    "background": "Stufenhintergrund bearbeiten",
+    "coreMenu": "Kernmenü anzeigen",
+    "transformMenu": "Transformationsmenü anzeigen",
+    "orderingMenu": "Bestellmenü anzeigen",
+    "goTo": "Zur Stufe wechseln",
+    "done": "Erledigt",
+    "removeStep": "Sicher, dass diese Stufe entfernt werden soll?",
+    "removeStepError": "Es kann nicht Null Stufen geben, es muss eine neue Stufe erstellt und nochmal versucht werden.",
+    "removeFromPathError": "Es kann kein leerer Pfad bestehen. Eine andere Stufe muss zum Pfad hinzugefügt und nochmal versucht werden.",
+    "include": "In den Pfad eingefügt",
+    "mode": "Modus:",
+    "move": "Bewegen",
+    "rotate": "Rotieren",
+    "transform": "Transformieren",
+    "editingStep": "Bearbeitete Stufe:",
+    "activeStep": "Aktive Stufe:",
+    "orderSteps": "Stufen ordnen",
+    "routeListText": "Eine Stufe durch das Ziehen an einen neuen Ort umsortieren"
+  }
+}
