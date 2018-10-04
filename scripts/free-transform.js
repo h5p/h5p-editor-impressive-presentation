@@ -152,8 +152,8 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function (EventDispatcher) 
           .css({'-moz-user-select': 'none', '-webkit-user-select': 'none'/*, 'user-select': 'none', '-ms-user-select': 'none'*/})
           .attr('unselectable', 'on')[0]
           .onselectstart = H5P.$body[0].ondragstart = function () {
-          return false;
-        };
+            return false;
+          };
       }
     });
 
@@ -320,7 +320,7 @@ H5PEditor.ImpressPresentationEditor.FreeTransform = (function (EventDispatcher) 
       initialPos = {
         x: e.clientX,
         y: e.clientY
-      }
+      };
     };
   }
 

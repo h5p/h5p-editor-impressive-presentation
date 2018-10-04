@@ -1,3 +1,4 @@
+/* global ns */
 /**
  * Interactive Video editor widget module
  *
@@ -13,8 +14,8 @@
 H5PEditor.widgets.impressPresentationEditor =
 H5PEditor.ImpressPresentationEditor =
 (function ($, JoubelUI, MainMenu, FreeTransform, CoreMenu, OrderingMenu,
-           TransformMenu, StepDialog, EditingStep, ActiveStep, ModeDisplay,
-           StepPreviewList, OverviewStep, NumericStepInput) {
+  TransformMenu, StepDialog, EditingStep, ActiveStep, ModeDisplay,
+  StepPreviewList, OverviewStep, NumericStepInput) {
 
   /**
    * Initialize interactive video editor.
@@ -384,7 +385,8 @@ H5PEditor.ImpressPresentationEditor =
     var self = this;
     if (self.passReadies) {
       self.parent.ready(ready);
-    } else {
+    }
+    else {
       self.readies.push(ready);
     }
   };
@@ -553,7 +555,8 @@ H5PEditor.ImpressPresentationEditor =
     var self = this;
     if (self.editModes[mode]) {
       self.disableMode(mode);
-    } else {
+    }
+    else {
       self.enableMode(mode);
     }
 
