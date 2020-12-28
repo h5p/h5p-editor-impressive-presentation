@@ -12,7 +12,7 @@
     "transformMenu": "Transformationsmenü anzeigen",
     "orderingMenu": "Bestellmenü anzeigen",
     "goTo": "Zur Stufe wechseln",
-    "done": "Erledigt",
+    "done": "Fertig",
     "removeStep": "Sicher, dass diese Stufe entfernt werden soll?",
     "removeStepError": "Es kann nicht Null Stufen geben, es muss eine neue Stufe erstellt und nochmal versucht werden.",
     "removeFromPathError": "Es kann kein leerer Pfad bestehen. Eine andere Stufe muss zum Pfad hinzugefügt und nochmal versucht werden.",
@@ -24,6 +24,16 @@
     "editingStep": "Bearbeitete Stufe:",
     "activeStep": "Aktive Stufe:",
     "orderSteps": "Stufen ordnen",
-    "routeListText": "Eine Stufe durch das Ziehen an einen neuen Ort umsortieren"
+    "routeListText": "Eine Stufe durch das Ziehen an einen neuen Ort umsortieren",
+    "showOverview": "Zeige Überblick",
+    "preview": "Vorschau",
+    "showingOverview": "Überblick",
+    "zoomFactorLabel": "Zoomfaktor:",
+    "zRotLabel": "z-Rotation",
+    "yRotLabel": "y-Rotation",
+    "xRotLabel": "x-Rotation",
+    "zLabel": "z-Position",
+    "yLabel": "y-Position",
+    "xLabel": "x-Position"
   }
 }
