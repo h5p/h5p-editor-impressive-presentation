@@ -3,9 +3,6 @@
     "step": "Stufe",
     "add": "Stufe hinzufügen",
     "remove": "Stufe löschen",
-    "moveStep": "Stufe bewegen",
-    "rotateStep": "Stufe drehen",
-    "transformStep": "Stufe transformieren",
     "edit": "Stufeninhalt bearbeiten",
     "background": "Stufenhintergrund bearbeiten",
     "coreMenu": "Kernmenü anzeigen",
@@ -25,15 +22,16 @@
     "activeStep": "Aktive Stufe:",
     "orderSteps": "Stufen ordnen",
     "routeListText": "Eine Stufe durch das Ziehen an einen neuen Ort umsortieren",
-    "showOverview": "Zeige Überblick",
     "preview": "Vorschau",
+    "showOverview": "Zeige Überblick",
     "showingOverview": "Überblick",
-    "zoomFactorLabel": "Zoomfaktor:",
+    "stepConfiguration": "Step configuration",
+    "zLabel": "z-Position",
+    "yLabel": "y-Position",
+    "xLabel": "x-Position",
     "zRotLabel": "z-Rotation",
     "yRotLabel": "y-Rotation",
     "xRotLabel": "x-Rotation",
-    "zLabel": "z-Position",
-    "yLabel": "y-Position",
-    "xLabel": "x-Position"
+    "zoomFactorLabel": "Zoomfaktor:"
   }
 }
