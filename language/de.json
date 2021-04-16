@@ -9,7 +9,7 @@
     "transformMenu": "Transformationsmenü anzeigen",
     "orderingMenu": "Bestellmenü anzeigen",
     "goTo": "Zur Stufe wechseln",
-    "done": "Fertig",
+    "done": "Erledigt",
     "removeStep": "Sicher, dass diese Stufe entfernt werden soll?",
     "removeStepError": "Es kann nicht Null Stufen geben, es muss eine neue Stufe erstellt und nochmal versucht werden.",
     "removeFromPathError": "Es kann kein leerer Pfad bestehen. Eine andere Stufe muss zum Pfad hinzugefügt und nochmal versucht werden.",
